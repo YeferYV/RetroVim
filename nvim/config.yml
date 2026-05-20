@@ -1,0 +1,32 @@
+display:
+  # show_root_entry: true
+  columns:
+    - git_status
+
+keybindings:
+  universal:
+    bindings:
+      - key: "o"
+        run: "xdg-open {path} || open {path} || start {path}"
+        run_mode: "background"
+  file:
+    bindings:
+      - key: "l"
+        run: |
+          nvim --server $NVIM --remote-send '<cmd>wincmd p<cr>'
+          nvim --server $NVIM --remote-send '<cmd>edit {path}<cr>'
+          nvim --server $NVIM --remote-send '<cmd>wincmd p<cr>'
+          nvim --server $NVIM --remote-send '<cmd>bdelete!<cr>'
+        run_mode: "background"
+
+      - key: "<CR>"
+        run: |
+          nvim --server $NVIM --remote-send '<cmd>wincmd p<cr>'
+          nvim --server $NVIM --remote-send '<cmd>edit {path}<cr>'
+          $EXIT && nvim --server $NVIM --remote-send '<cmd>silent! bdelete! term*trev*<cr>'
+        run_mode: "background"
+
+  directory:
+    bindings:
+      - key: "<CR>"
+        action: tree.change_root

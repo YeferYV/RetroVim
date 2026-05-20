@@ -1,0 +1,5 @@
+---
+"input:open_completion_suggestions": tab
+/open-repo: ctrl-shift-O
+"terminal:copy": alt-c
+"terminal:paste": alt-v

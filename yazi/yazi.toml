@@ -1,0 +1,15 @@
+[mgr]
+ratio          = [ 0, 1, 2 ]
+scrolloff      = 10
+show_hidden    = true
+show_symlink   = false
+
+[opener]
+play = [
+	{ run = """ vlc %s """, orphan = true },
+]
+edit = [
+	{ run = """  %EDITOR%  %s  2>nul  ||  nvim  %s  &  exit  0  """, block  = true, desc = "$EDITOR", for = "windows" },
+	{ run = """ ${EDITOR:-nvim} %s                              """, block  = true, desc = "$EDITOR", for = "unix" },
+	{ run = """ code  %s                                        """, orphan = true, desc = "vscode" },
+]

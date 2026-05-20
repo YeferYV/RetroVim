@@ -1,5 +1,0 @@
-#!/bin/bash
-
-export VIMINIT="lua vim.cmd.source(vim.env.APPDIR2 .. [[/usr/home/user/.config/nvim/init.lua]])"
-export APPDIR2=$APPDIR
-$APPDIR/usr/bin/nvim $@

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-export YAZI_CONFIG_HOME="$APPDIR/usr/home/user/.config/yazi"
-export PATH="$APPDIR/.pixi/envs/default/bin:$PATH"
-yazi $@

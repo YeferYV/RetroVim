@@ -1,0 +1,99 @@
+[terminal]
+mouse_reporting_enabled = false
+focus_reporting_enabled = false
+
+[terminal.input]
+completions_open_while_typing = true
+input_box_type_setting = "classic"
+honor_ps1 = true
+alias_expansion_enabled = false
+
+[privacy]
+crash_reporting_enabled = true
+telemetry_enabled = true
+
+[text_editing]
+vim_mode_enabled = false
+vim_unnamed_system_clipboard = true
+
+[appearance]
+spacing = "compact"
+
+[appearance.full_screen_apps]
+alt_screen_padding = "match_blocklist"
+
+[appearance.text]
+notebook_font_size = 14.0
+font_size = 12.0
+ai_font_name = "FiraCode Nerd Font"
+match_ai_font = false
+font_name = "FiraCode Nerd Font"
+ligature_rendering_enabled = true
+line_height_ratio = 1.0
+
+[appearance.input]
+input_mode = "waterfall"
+
+[appearance.blocks]
+show_block_dividers = false
+show_jump_to_bottom_of_block_button = false
+
+[appearance.window]
+override_opacity = 62
+open_windows_at_custom_size = false
+
+[agents]
+cloud_conversation_storage_enabled = true
+
+[agents.warp_agent]
+
+[agents.warp_agent.input]
+nld_in_terminal_enabled = false
+
+[global_hotkey]
+
+[global_hotkey.toggle_all_windows]
+enabled = true
+
+[global_hotkey.dedicated_window]
+enabled = false
+
+[global_hotkey.dedicated_window.settings]
+active_pin_position = "top"
+hide_window_when_unfocused = false
+keybinding = 'cmd-\'
+pin_screen = "primary"
+
+[global_hotkey.dedicated_window.settings.pin_position_to_size_percentages]
+bottom = { height = 30, width = 100 }
+left = { height = 100, width = 40 }
+right = { height = 100, width = 40 }
+top = { height = 30, width = 100 }
+
+[account]
+is_settings_sync_enabled = true
+
+[notifications]
+toast_duration_secs = 8
+
+[general]
+mouse_scroll_multiplier = 3.0
+show_warning_before_quitting = false
+snackbar_enabled = false
+restore_session = true
+
+[session]
+
+[session.new_session_shell_override]
+custom = "/home/drksl/.pixi/envs/wezterm/bin/zsh"
+
+[system]
+force_x11 = true
+
+[warpify]
+
+[warpify.ssh]
+enable_ssh_warpification = false
+
+[warpify.subshells]
+subshell_commands_denylist = ["/home/drksl/.pixi/envs/wezterm/bin/zsh"]

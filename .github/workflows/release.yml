@@ -1,141 +1,73 @@
-# ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-# │ systemctl start docker && act -s GITHUB_TOKEN="$(gh auth token)" -j upload-release --artifact-server-path ./artifacts --action-offline-mode --action-cache-path "$HOME/.cache/act" │
-# ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+# ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+# │ systemctl start docker && act -s VSCE_TOKEN -s GITHUB_TOKEN="$(gh auth token)" -j upload-release --artifact-server-path ./artifacts --action-offline-mode --action-cache-path "$HOME/.cache/act" │
+# ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
 # https://github.com/nektos/act/issues/2433
 name: Upload_Release
 
-# https://cht.sh/crontab
-# https://crontab.guru
-# * * * * *
-# - - - - -
-# | | | | |
-# | | | | +- day of week (0 - 7) (where sunday is 0 and 7)
-# | | | +--- month (1 - 12)
-# | | +----- day (1 - 31)
-# | +------- hour (0 - 23)
-# +--------- minute (0 - 59)
-
 on:
   push:
-    tags:
-      - '*' # run this action on new tags
-
-  schedule:
-    - cron: "0 0 1 * *"   # every month
-    # - cron: "0 0 * * 1" # every week
+    branches:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# required by `gh release upload`
+# https://josh-ops.com/posts/gh-auth-login-in-actions/
+# https://stackoverflow.com/questions/76830110/github-cli-from-github-actions-workflow
+# https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/accessing-contextual-information-about-workflow-runs#secrets-context
+# Since `VSCE_TOKEN` is a secret variable, it is not immediately usable as an environment variable. see: https://github.com/microsoft/vscode-docs/pull/3857
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # setting GH_TOKEN for the entire workflow
+  VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
+  OVSX_PAT: ${{ secrets.OVSX_TOKEN }}
+  ANACONDA_API_KEY: ${{ secrets.ANACONDA_TOKEN }}
+
+# https://github.com/googleapis/release-please-action?tab=readme-ov-file#workflow-permissions
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   upload-release:
     runs-on: ubuntu-latest
 
     steps:
+      # https://www.youtube.com/watch?v=P0wAXh5UOnM
+      #                                                        ╭───────────────────────────────────────────────────────────────────╮
+      # to retrigger remove the github release and tag then -> │ git pull && git commit --allow-empty --amend && git push --force  │
+      #                                                        ╰───────────────────────────────────────────────────────────────────╯
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+
       - name: Checkout 🛬
+        if: ${{ steps.release.outputs.release_created }}
         uses: actions/checkout@v4
 
-      - name: Build Appimages 🚀
+      - name: Publish to vscode marketplace and anaconda.org 🚀
+        if: ${{ steps.release.outputs.release_created }}
         run: |
 
-          ####################################################################################################################################################################################################################
+          ############################################################################################################################################################
 
-          mkdir -p .config/_gitmodules
-          git clone             https://github.com/occivink/mpv-gallery-view .config/_gitmodules/mpv-gallery-view
-          git clone --recursive https://github.com/yeferyv/retronvim         .config/_gitmodules/retronvim
-          rm -rf .config/_gitmodules/retronvim/nvim/plugins/site/pack/deps/opt/snacks.nvim/tests
-          rm -rf .config/_gitmodules/retronvim/nvim/plugins/site/pack/deps/start/mini.nvim/tests
+          git submodule update --init --depth 1
+          rm -rf ./nvim/plugins/snacks.nvim/tests
+          rm -rf ./nvim/plugins/mini.nvim/tests
 
-          curl -L pixi.sh/install.sh | bash
+          curl -L pixi.sh/install.sh | sh
           export PATH="$HOME/.pixi/bin:$PATH"
+          pixi global install rattler-build
 
-          curl  -o appimagetool -L https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
-          chmod +x appimagetool
-
-          #####################################################################################################################################################################################################################################################################################################################################################################
-
-          (
-            mkdir -p kanata/usr/bin
-            curl  -o kanata/usr/bin/kanata -L https://github.com/jtroo/kanata/releases/download/v1.10.0-prerelease-2/kanata_cmd_allowed
-            chmod +x kanata/usr/bin/kanata
-            mkdir -p kanata/usr/home/user/.config
-            cp    -r .config/_gitmodules/retronvim/kanata kanata/usr/home/user/.config
-          )
-          (
-            mkdir -p mpv/usr/bin
-            curl  -o mpv/usr/bin/mpv -L https://github.com/ivan-hc/MPV-appimage/releases/download/20250928-123912/mpv-Media-Player_0.40.0-6-archimage4.3-x86_64.AppImage
-            chmod +x mpv/usr/bin/mpv
-            mkdir -p mpv/home/user/home/user/.config/mpv
-            cp    -r .config/_gitmodules/mpv-gallery-view/script-modules mpv/usr/home/user/.config/mpv/script-modules
-            cp    -r .config/_gitmodules/mpv-gallery-view/scripts        mpv/usr/home/user/.config/mpv/scripts
-          )
-          (
-            pixi     global install expat=2.7.1 gcc=15.2.0 glib=2.86.1 make=4.3 mpv=0.40.0 pkg-config=0.29.2 zlib=1.3.1 --environment gcc
-            export   PKG_CONFIG_PATH="$HOME/.pixi/envs/gcc/lib/pkgconfig"   # not required if `which pkg-config` is ~/.pixi/envs/gcc/bin/pkg-config instead of /bin/pkg-config
-            export   PKG_CONFIG_LIBDIR="$HOME/.pixi/envs/gcc/lib/pkgconfig" # not required if `which pkg-config` is ~/.pixi/envs/gcc/bin/pkg-config instead of /bin/pkg-config
-            ~/.pixi/envs/gcc/bin/pkg-config --cflags --libs gio-2.0         # verify detection
-
-            git      clone https://github.com/hoyon/mpv-mpris /tmp/mpris
-            (cd      /tmp/mpris && make mpris.so)
-            cp       /tmp/mpris/mpris.so .
-          )
-          (
-            mkdir -p nvim/usr/bin
-            curl  -o nvim/usr/bin/nvim -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage
-            chmod +x nvim/usr/bin/nvim
-            mkdir -p nvim/usr/home/user/.config
-            cp    -r .config/_gitmodules/retronvim/nvim                           nvim/usr/home/user/.config
-            git clone --depth=1 https://github.com/supermaven-inc/supermaven-nvim nvim/usr/home/user/.config/nvim/plugins/site/pack/deps/opt/supermaven-nvim
-          )
-          (
-            mkdir -p wezterm/usr/bin
-            curl  -o wezterm/usr/bin/wezterm -L https://github.com/wezterm/wezterm/releases/download/nightly/WezTerm-nightly-Ubuntu20.04.AppImage
-            chmod +x wezterm/usr/bin/wezterm
-            curl  -L https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.tar.xz | tar -xJf- --directory /tmp
-            cp    -r /tmp/{FiraCodeNerdFont-Regular.ttf,FiraCodeNerdFont-Bold.ttf} wezterm/assets
-            mkdir -p wezterm/usr/home/user/.config/wezterm
-            cp    -r .config/_gitmodules/retronvim/zsh/wezterm.lua wezterm/usr/home/user/.config/wezterm
-          )
-          (
-            cd yazi
-            pixi install
-            echo  -e '#!/bin/sh'                                   > .pixi/envs/default/bin/7z
-            echo  -e '$APPDIR/.pixi/envs/default/lib/p7zip/7z $@' >> .pixi/envs/default/bin/7z
-            mkdir -p                                                  usr/home/user/.config
-            cp    -r ../.config/_gitmodules/retronvim/yazi            usr/home/user/.config
-          )
-          (
-            cd zsh
-            pixi  install
-            curl  -o .pixi/envs/default/bin/pixi -L https://github.com/prefix-dev/pixi/releases/download/v0.49.0/pixi-x86_64-unknown-linux-musl
-            chmod +x .pixi/envs/default/bin/pixi
-            mkdir -p                                      usr/home/user/.config
-            cp    -r ../.config/_gitmodules/retronvim/zsh usr/home/user/.config
-          )
-          (
-            ARCH=x86_64 ./appimagetool kanata  kanata.appimage
-            ARCH=x86_64 ./appimagetool mpv     mpv.appimage
-            ARCH=x86_64 ./appimagetool nvim    nvim.appimage
-            ARCH=x86_64 ./appimagetool yazi    yazi.appimage
-            ARCH=x86_64 ./appimagetool zsh     zsh.appimage
-
-            cp ./zsh.appimage                  wezterm/usr/bin/zsh
-            cp ./nvim.appimage                 wezterm/usr/bin/nvim
-            cp ./yazi.appimage                 wezterm/usr/bin/yazi
-            ARCH=x86_64 ./appimagetool wezterm wezterm.appimage
-          )
-
-          ####################################################################################################################################################################################################################
+          # https://rattler-build.prefix.dev/latest/getting_started/#authentication
+          # https://rattler-build.prefix.dev/latest/getting_started/#publishing-the-package
+          # https://rattler-build.prefix.dev/latest/getting_started/#publishing-to-anacondaorg
+          rattler-build auth login anaconda.org --conda-token $ANACONDA_API_KEY
+          rattler-build publish .conda/retronvim.yaml --target-platform linux-64 --to https://anaconda.org/retronvim --build-number=+1 --package-format conda:22
+          rattler-build publish .conda/retronvim.yaml --target-platform osx-64   --to https://anaconda.org/retronvim --build-number=+1 --package-format conda:22
+          rattler-build publish .conda/retronvim.yaml --target-platform win-64   --to https://anaconda.org/retronvim --build-number=+1 --package-format conda:22
 
       - name: Github release 📦
-        run: |
-          gh    release create "$(date +%y-%m-%d)" --generate-notes --notes "Monthly Release" # --notes-from-tag
-          gh    release upload "$(date +%y-%m-%d)" *.appimage mpris.so
-          # npx release-please --help
-          # npx release-please release-pr     --release-type node --repo-url https://github.com/yeferyv/sixelrice # --token $(gh auth token) # requires a version inside package.json # creates a PR with conventional commits
-          # npx release-please github-release --release-type node --repo-url https://github.com/yeferyv/sixelrice # --token $(gh auth token) # requires a version inside package.json # creates release notes from conventional commits
+        if: ${{ steps.release.outputs.release_created }}
+

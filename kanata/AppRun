@@ -1,3 +1,0 @@
-#!/bin/bash
-
-$APPDIR/usr/bin/kanata --cfg $APPDIR/usr/home/user/.config/kanata/simple.kbd

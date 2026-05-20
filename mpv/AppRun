@@ -1,4 +1,0 @@
-#!/bin/bash
-
-export MPV_HOME="$APPDIR/usr/home/user/.config/mpv"
-exec "$APPDIR/usr/bin/mpv" "$@"

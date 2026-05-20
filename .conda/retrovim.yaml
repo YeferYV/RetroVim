@@ -1,0 +1,243 @@
+# https://rattler-build.prefix.dev/latest/tutorials/repackaging/
+# rattler-build build --recipe retrovim.yaml --target-platform linux-64 --output-dir retrovim-channel --build-num=+1 --package-format conda:22
+# rattler-build build --recipe retrovim.yaml --target-platform osx-64   --output-dir retrovim-channel --build-num=+1 --package-format conda:22
+# rattler-build build --recipe retrovim.yaml --target-platform win-64   --output-dir retrovim-channel --build-num=+1 --package-format conda:22
+
+# rm -r ~/.cache/rattler
+# pixi g install      --path ./retrovim-channel/linux-64/retrovim*                     --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel -c $PWD/appman-channel
+# pixi g install      --path ./retrovim-channel/osx-64/retrovim*                       --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel
+# pixi g install      --path ./retrovim-channel/win-64/retrovim-0.4.5-h9490d1a_1.conda --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel -c $PWD/msys2-channel
+
+# https://pixi.prefix.dev/dev/reference/cli/pixi/upload/anaconda/
+# pixi upload anaconda --owner=retronvim retrovim*/*/*conda
+
+context:
+  version: 0.0.1
+
+package:
+  name: retrovim
+  version: ${{ version }}
+
+source:
+  # - git: https://github.com/yeferyv/retrovim
+  #   target_directory: retrovim
+  #   depth: 1
+  #   submodules: true
+
+  - path: ..
+    target_directory: opt/retrovim
+    filter:
+      exclude:
+        - .git
+        - nvim/plugins/site/pack/deps/opt/snacks.nvim/tests
+        - nvim/plugins/site/pack/deps/opt/mini.nvim/tests
+
+  - if: linux
+    then:
+      - url: https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-linux-x86_64.tar.gz
+        target_directory: "opt/neovim"
+
+      - url: https://github.com/equalsraf/win32yank/releases/download/v0.1.1/win32yank-x64.zip
+        target_directory: "opt/neovim"
+
+  - if: osx
+    then:
+      - url: https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-macos-x86_64.tar.gz
+        target_directory: "opt/neovim"
+
+  - if: win
+    then:
+      - url: https://github.com/neovim/neovim/releases/download/v0.12.2/nvim-win64.zip
+        target_directory: "opt/neovim"
+
+build:
+  # number: 0 # build version
+
+  dynamic_linking:
+    # fixes macos builds from linux: failed to find `install_name_tool`
+    # https://rattler-build.prefix.dev/latest/build_options/#dynamic-linking-configuration
+    binary_relocation: false
+
+  script:
+    interpreter: bash
+    content:
+      - mkdir -p     $PREFIX/bin
+      - cp    -r opt $PREFIX/opt
+
+      - if: unix
+        then: |
+
+          ############################################################################################################################
+
+          cat   >> $PREFIX/bin/git <<< '#!/bin/bash'
+          cat   >> $PREFIX/bin/git <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/git <<< 'cp --update $CONDA_PREFIX/__clobbers__/git/bin/git $CONDA_PREFIX/bin/git.2.53.0'
+          cat   >> $PREFIX/bin/git <<< 'exec git.2.53.0 "$@"'
+          chmod +x $PREFIX/bin/git
+
+          ############################################################################################################################
+
+          cat   >> $PREFIX/bin/kanata_touchcursor <<< '#!/bin/bash'
+          cat   >> $PREFIX/bin/kanata_touchcursor <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/kanata_touchcursor <<< 'sudo --validate'
+          cat   >> $PREFIX/bin/kanata_touchcursor <<< 'sudo --preserve-env $CONDA_PREFIX/bin/kanata --cfg $CONDA_PREFIX/opt/retrovim/kanata/touchcursor.kbd & disown'
+          chmod +x $PREFIX/bin/kanata_touchcursor
+
+          ############################################################################################################################
+
+          cat   >> $PREFIX/bin/nvim <<< '#!/bin/bash'
+          cat   >> $PREFIX/bin/nvim <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/nvim <<< 'export SHELL="$CONDA_PREFIX/bin/zsh"'
+          cat   >> $PREFIX/bin/nvim <<< 'export VIMINIT="lua vim.cmd.source(vim.env.CONDA_PREFIX .. [[/opt/retrovim/nvim/init.lua]])"'
+          cat   >> $PREFIX/bin/nvim <<< 'exec $CONDA_PREFIX/opt/neovim/bin/nvim "$@"'
+          chmod +x $PREFIX/bin/nvim
+
+          ############################################################################################################################
+
+          cat   >> $PREFIX/bin/terax <<< '#!/bin/bash'
+          cat   >> $PREFIX/bin/terax <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/terax <<< 'export ZDOTDIR="$CONDA_PREFIX/opt/retrovim/zsh"'
+          cat   >> $PREFIX/bin/terax <<< 'exec $CONDA_PREFIX/__clobbers__/terax/bin/terax "$@"'
+          chmod +x $PREFIX/bin/terax
+
+          ############################################################################################################################
+
+          cat   >> $PREFIX/bin/yazi <<< '#!/bin/bash'
+          cat   >> $PREFIX/bin/yazi <<< 'export BAT_THEME="base16"'
+          cat   >> $PREFIX/bin/yazi <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/yazi <<< 'export FZF_DEFAULT_OPTS='\''--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'\'
+          cat   >> $PREFIX/bin/yazi <<< 'export LESS="--ignore-case"'
+          cat   >> $PREFIX/bin/yazi <<< 'export LESSKEYIN="$CONDA_PREFIX/opt/retrovim/yazi/lesskey"'
+          cat   >> $PREFIX/bin/yazi <<< 'export LESSHISTFILE="-"'
+          cat   >> $PREFIX/bin/yazi <<< 'export YAZI_CONFIG_HOME="$CONDA_PREFIX/opt/retrovim/yazi"'
+          cat   >> $PREFIX/bin/yazi <<< 'exec $CONDA_PREFIX/__clobbers__/yazi/bin/yazi "$@"'
+          chmod +x $PREFIX/bin/yazi
+
+          ############################################################################################################################
+
+          cat   >> $PREFIX/bin/zsh <<< '#!/bin/bash'
+          cat   >> $PREFIX/bin/zsh <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/zsh <<< 'export ZDOTDIR="$CONDA_PREFIX/opt/retrovim/zsh"'
+          cat   >> $PREFIX/bin/zsh <<< 'exec zsh-5.9 "$@"'
+          chmod +x $PREFIX/bin/zsh
+
+          ############################################################################################################################
+
+      - if: win
+        then: |
+
+          ############################################################################################################################
+
+          cat >> $PREFIX/bin/git.cmd <<< '@echo off'
+          cat >> $PREFIX/bin/git.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
+          cat >> $PREFIX/bin/git.cmd <<< 'set MSYSTEM=MSYS'
+          cat >> $PREFIX/bin/git.cmd <<< 'set PATH=%CONDA_PREFIX%\opt\msys2\usr\bin;%PATH%'
+          cat >> $PREFIX/bin/git.cmd <<< '%CONDA_PREFIX%/opt/msys2/usr/bin/git.exe %*'
+
+          ############################################################################################################################
+
+          cat >> $PREFIX/bin/kanata_touchcursor.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
+          cat >> $PREFIX/bin/kanata_touchcursor.cmd <<< 'powershell -c "Set-WinUserLanguageList -force en-US,es-US"'
+          cat >> $PREFIX/bin/kanata_touchcursor.cmd <<< 'start conhost --headless %CONDA_PREFIX%/bin/kanata.exe --cfg %CONDA_PREFIX%/opt/retrovim/kanata/touchcursor.kbd'
+
+          cat >> $PREFIX/bin/kanata_touchcursor     <<< '#!/bin/bash'
+          cat >> $PREFIX/bin/kanata_touchcursor     <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$HOME/.pixi/envs/retrovim}'
+          cat >> $PREFIX/bin/kanata_touchcursor     <<< 'powershell -c "Set-WinUserLanguageList -force en-US,es-US"'
+          cat >> $PREFIX/bin/kanata_touchcursor     <<< 'start conhost --headless %CONDA_PREFIX%/bin/kanata.exe --cfg %CONDA_PREFIX%/opt/retrovim/kanata/touchcursor.kbd'
+
+          ############################################################################################################################
+
+          cat >> $PREFIX/bin/nvim.cmd <<< '@echo off'
+          cat >> $PREFIX/bin/nvim.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
+          cat >> $PREFIX/bin/nvim.cmd <<< 'set SHELL=%CONDA_PREFIX%/bin/zsh'
+          cat >> $PREFIX/bin/nvim.cmd <<< 'set "VIMINIT=lua vim.cmd.source(vim.env.CONDA_PREFIX .. [[/opt/retrovim/nvim/init.lua]])"'
+          cat >> $PREFIX/bin/nvim.cmd <<< '%CONDA_PREFIX%/opt/neovim/bin/nvim %*'
+
+          ############################################################################################################################
+
+          cat >> $PREFIX/bin/terax.cmd <<< '@echo off'
+          cat >> $PREFIX/bin/terax.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
+          cat >> $PREFIX/bin/terax.cmd <<< 'start terax.exe %*'
+
+          ############################################################################################################################
+
+          cat >> $PREFIX/bin/yazi.cmd <<< '@echo off'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set BAT_THEME=base16'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set FZF_DEFAULT_OPTS=--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set LESS=--ignore-case'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set LESSKEYIN=%CONDA_PREFIX%/opt/retrovim/yazi/lesskey'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set LESSHISTFILE=-'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set YAZI_CONFIG_HOME=%CONDA_PREFIX%/opt/retrovim/yazi'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set PATH=%CONDA_PREFIX%\opt\msys2\usr\bin;%PATH%'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'yazi.exe %*'
+
+          ############################################################################################################################
+
+          cat >> $PREFIX/bin/zsh.cmd <<< '@echo off'
+          cat >> $PREFIX/bin/zsh.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
+          cat >> $PREFIX/bin/zsh.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
+          cat >> $PREFIX/bin/zsh.cmd <<< '%CONDA_PREFIX%/opt/msys2/usr/bin/zsh.exe %*'
+
+          cat >> $PREFIX/bin/pwsh.cmd <<< '@echo off'
+          cat >> $PREFIX/bin/pwsh.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
+          cat >> $PREFIX/bin/pwsh.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
+          cat >> $PREFIX/bin/pwsh.cmd <<< '%CONDA_PREFIX%/opt/msys2/usr/bin/zsh.exe'
+
+          ############################################################################################################################
+
+requirements:
+
+  run:
+    # - chrome
+    # - vscode
+    # - vlc
+
+    - 7zip=26.00
+    - bat=0.26.1
+    - eza=0.23.4
+    - fd-find=10.4.2
+    - firacode-nerdfont-installer=3.4.0
+    - fzf=0.70.0
+    - kanata=1.11.0
+    - lazygit=0.60.0
+    - less=692
+    - ripgrep=15.1.0
+    - starship=1.24.2
+    - terax=0.7.3
+    - yazi=26.5.6
+    - zsh-patina=1.7.0
+
+    - if: linux
+      then:
+        - appman
+
+    - if: unix
+      then:
+        - unzip # required by mason.nvim
+        - file=5.47
+        - git=2.53.0
+        - zsh=5.9
+        - zerobrew
+
+    - if: win
+      then:
+        - m2-unzip=6.0.3 # required by mason.nvim
+        - msys2=2025.12.13
+
+tests:
+  - package_contents:
+      bin:
+        - git*
+        - kanata*
+        - nvim*
+        - terax*
+        - yazi*
+        - zsh*
+
+about:
+  summary: minimal neovim, warp, yazi, zsh and kanata setup
+  description: |
+    terax-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builtin plugins + kanata keyboard layout
+  homepage: https://github.com/yeferyv/retrovim
+  repository: https://github.com/yeferyv/retrovim
