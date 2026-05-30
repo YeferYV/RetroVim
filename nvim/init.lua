@@ -97,11 +97,85 @@ if not vim.g.vscode then
   vim.o.foldmethod = "expr"                   --- expr = specify an expression to define folds
   vim.o.foldexpr = 'v:lua.vim.lsp.foldexpr()' --- if folding using treesitter then 'v:lua.vim.treesitter.foldexpr()'
   vim.o.fillchars = [[eob: ,fold: ,foldinner: ,foldopen:,foldsep: ,foldclose:]]
+  vim.g.netrw_banner = 0                      -- Hide the massive top banner
+  vim.g.netrw_liststyle = 3                   -- Use tree-style view instead of a flat list
+  vim.g.netrw_browse_split = 4                -- Open files in a new vertical split on the right
+  vim.g.netrw_winsize = 18                    -- Set the width of the netrw split window (percentage)
+  vim.g.netrw_preview = 1                     -- open in a split window
+  vim.g.netrw_list_hide =                     -- absolute path not supported only relative path works
+      vim.cmd.packadd('netrw') and
+      vim.fn["netrw_gitignore#Hide"]()
+      .. ",.git"
+  -- vim.g.netrw_localcopydircmd = 'cp -r'    -- Change copy command to support recursive copying
+  -- vim.g.netrw_keepdir = 0                  -- don't close netrw after picking a file
+  -- vim.g.netrw_altv = 1                     -- open file to the right
+  -- vim.g.netrw_special_syntax = 0           -- desactiva los colores por defecto de netrw
 end
 
 --- ╭──────────────╮
 --- │ Autocommands │
 --- ╰──────────────╯
+
+local M = {}
+local mini_icons = require('mini.icons')
+local netrw_ns = vim.api.nvim_create_namespace('netrw_icons')
+
+local function set_netrw_icons(ev)
+  -- https://www.reddit.com/r/neovim/comments/lovv9i/how_can_i_stop_netrw_creating_no_name_buffers_on_toggle
+  -- vim.bo.bufhidden = 'hide' --- if 'wipe' then vim.cmd.buffer() can't find ev.buf
+
+  M.netrw_buf = ev.buf
+  autocmd('WinClosed', { buffer = ev.buf, once = true, callback = function() M.netrw_buf = nil end })
+
+  map("n", "l", "<cr>", { buffer = ev.buf, remap = true })
+  map("n", "h", "<cr>", { buffer = ev.buf, remap = true })
+  map("n", "q", "<cmd>quit<cr>", { buffer = ev.buf, remap = true })
+  map("n", "<c-l>", "<cmd>wincmd l<cr>", { buffer = ev.buf, remap = true })
+
+  vim.api.nvim_buf_clear_namespace(0, netrw_ns, 0, -1)
+
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+  for i, line in ipairs(lines) do
+    -- overlay tree bar characters
+    local col = 0
+    while true do
+      local s = line:find('|', col + 1, true)
+      if not s then break end
+      vim.api.nvim_buf_set_extmark(0, netrw_ns, i - 1, s - 1, {
+        virt_text = { { '│', 'Comment' } },
+        virt_text_pos = 'overlay',
+      })
+      col = s
+    end
+
+    -- netrw style 3: "| | filename" or "| | dir/"
+    local name = line:match('^.*|%s+(.+)$')
+
+    if name then
+      local is_dir = name:sub(-1) == '/'
+      local icon, hl = mini_icons.get('file', name)
+
+      if is_dir then
+        icon, hl = mini_icons.get('directory', name)
+        vim.api.nvim_buf_set_extmark(0, netrw_ns, i - 1, #line - 1, {
+          virt_text = { { ' ', hl } },
+          virt_text_pos = 'overlay'
+        })
+      end
+
+      if icon then
+        vim.api.nvim_buf_set_extmark(0, netrw_ns, i - 1, #line - #name - 2, {
+          virt_text = { { icon .. ' ', hl } },
+          virt_text_pos = 'overlay'
+        })
+      end
+    end
+  end
+end
+
+--- set mini.icons when opening netrw
+autocmd('FileType', { pattern = 'netrw', callback = set_netrw_icons })
 
 --- stop comment prefix on new lines
 autocmd({ "BufEnter" }, { command = "set formatoptions-=cro" })
@@ -305,6 +379,7 @@ if not vim.g.vscode then
   vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = "#787c99" })
   vim.api.nvim_set_hl(0, "SnacksPickerDir", { fg = "#a9b1d6" })
   vim.api.nvim_set_hl(0, "SnacksPickerDirectory", { fg = "#5555cc" })
+  vim.api.nvim_set_hl(0, "Directory", { fg = "#5555cc" })
   -- vim.api.nvim_set_hl(0, "SnacksPickerFile", { fg = "#d5d6db" })
   vim.api.nvim_set_hl(0, "MiniIconsAzure", { fg = "#5555cc" })
   vim.api.nvim_set_hl(0, "MiniStatuslineFilename", { bg = "NONE" })
@@ -508,7 +583,6 @@ if not vim.g.vscode then
     "n",
     "<leader>L",
     function()
-      -- sendSequence([[pixi search '*language-server' -l0 -n -1 | fzf | xargs pixi g install --environment neovim-lsp]])
       sendSequence([[pixi g install --environment neovim-lsp "$(pixi search '*language-server' -l0 -n -1 | fzf)" ]])
       fix_node_path()
       vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig' }})
@@ -592,7 +666,7 @@ if not vim.g.vscode then
     function()
       vim.cmd.terminal([[ nvim --server $NVIM --remote "$(rg --files --sortr=path | fzf --no-sort --preview-window=nohidden)"]])
       vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { once = true, command = [[silent! bdelete! term*$NVIM* | set laststatus=3]] })
+      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! term*$NVIM* | set laststatus=3]] })
     end,
     { desc = " fzf files" }
   )
@@ -608,15 +682,16 @@ if not vim.g.vscode then
         [[ --bind "enter:become(nvim --server $NVIM --remote-send '<cmd>edit +{2} {1}<cr>')" ]]
       )
       vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { once = true, command = [[silent! bdelete! term*$NVIM* | set laststatus=3]] })
+      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! term*$NVIM* | set laststatus=3]] })
     end,
     { desc = " fzf text" }
   )
   map("n", "<leader>fr", "<cmd>Pick oldfiles<cr>", { desc = "󱋡 recent files" })
-  map("n", '<leader>f"', "<cmd>Pick registers<cr>", { desc = "󱛢 register (:help quote)" })
+  map("n", '<leader>f"', "<cmd>Pick registers<cr>", { desc = '󱛢 register (:help quote)' })
   map("n", "<leader>f'", "<cmd>Pick marks<cr>", { desc = " bookmarks" })
   map("n", "<leader>f;", "<cmd>Pick list scope='jump'<cr>", { desc = " jumps" })
-  map("n", "<leader>f,", "<cmd>buffer #<cr>", { desc = "󰻡 Recent buffer" })
+  map("n", "<leader>f:", "q:", { desc = " :commands (U to repeat)" }) --- <cr> to execute command
+  map("n", "<leader>f,", "<cmd>buffer #<cr>", { desc = "󰻡 recent buffer" })
   map("n", "<leader>g", "", { desc = "󰊢 git" })
   map(
     "n",
@@ -648,32 +723,30 @@ if not vim.g.vscode then
     "n",
     "<leader>e",
     function()
-      local curr_file = vim.fn.expand('%:p')
-      vim.cmd.set("nosplitright")
-      vim.cmd.wincmd("25v")
-      vim.env.EXIT=false
-      vim.cmd.terminal('trev --ipc --reveal ' .. curr_file)
-      vim.cmd.set("splitright")
-      vim.bo.buflisted = false
-      autocmd("BufEnter", { pattern = 'term://*trev*', command = 'startinsert' })
-      autocmd("TermClose", { pattern = 'term://*trev*', command = [[silent! bdelete!]] .. vim.fn.bufnr(), once = true })
+      --- toggle explorer
+      if M.netrw_buf then
+        vim.cmd.bdelete(M.netrw_buf)
+        M.netrw_buf = nil
+        return
+      end
+
+      local path = vim.split(vim.fn.expand('%'),"/")
+      vim.cmd.Explore(vim.fn.getcwd()) --- Explore() restores tree at getcwd() which is changed to .git path by mini.misc
+      vim.cmd.buffer("#")
+      vim.cmd.Vexplore({bang = true})
+
+      --- https://superuser.com/questions/1531456/how-to-reveal-a-file-in-vim-netrw-treeview
+      --- focus current file (needs to address more edge cases)
+      for _, dir in ipairs(path) do
+        vim.fn.search(dir)
+      end
+      vim.cmd.normal("zb") -- redraw at bottom
     end,
     { desc = "󰙅 explorer" }
   )
   map(
     "n",
     "<leader>o",
-    function()
-      local curr_file = vim.fn.expand('%:p')
-      vim.cmd.terminal('trev --ipc --reveal ' .. curr_file)
-      require("mini.misc").zoom()
-      autocmd("TermClose", { pattern = 'term://*trev*', command = [[silent! bdelete! term*trev*]], once = true })
-    end,
-    { desc = "󰙅 previewer" }
-  )
-  map(
-    "n",
-    "<leader>O",
     function()
       local curr_file = vim.fn.expand('%:p')
       vim.cmd.terminal(
@@ -683,7 +756,7 @@ if not vim.g.vscode then
         -- .. 'nvim --server $NVIM --remote-send "<cmd>bdelete! \\#<cr>"'
       )
       vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { pattern = 'term://*yazi*', command = [[silent! bdelete! term*yazi* | set laststatus=3]], once = true })
+      autocmd("TermClose", { buffer = vim.fn.bufnr(), command = [[silent! bdelete! ]] .. vim.fn.bufnr() .. [[ | set laststatus=3]], once = true })
     end,
     { desc = "󰙅 yazi" }
   )
@@ -697,7 +770,6 @@ else
 end
 
 ------------------------------------------------------------------------------------------------------------------------
-
 map({ "n", "x" }, "<leader><leader>", "", { desc = "󰅌 second clipboard" })
 map("n", "<leader><leader>p", '"*p', { desc = "󰨸 paste after" })
 map("n", "<leader><leader>P", '"*P', { desc = "󰨸 paste before" })
@@ -707,6 +779,7 @@ map("n", "<leader><leader>y", '"*y', { desc = "󰅍 yank" })
 map("n", "<leader><leader>Y", '"*yg_', { desc = "󰅍 yank forward" })
 map("x", "<leader><leader>y", '"*y', { desc = "󰅍 yank" })
 map("x", "<leader><leader>Y", 'g_"*y', { desc = "󰅍 yank forward" })
+map("n", "<leader><leader><leader>", '@*', { desc = "󰅍 run yanked text as command" })
 
 --- ╭───────────────────────────────────╮
 --- │ Operator / Motions / text objects │
