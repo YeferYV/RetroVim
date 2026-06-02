@@ -521,8 +521,7 @@ end
 ---@format disable
 if not vim.g.vscode then
   ---------------------------------------------------------------------------------------------------------------------
-  vim.lsp.enable(vim.tbl_map(function(config) return config.name end, vim.lsp.get_configs()))
-  vim.lsp.enable("gitlab_duo", false) -- if binary not found breaks typing
+  vim.lsp.config('*', { root_markers = { '.git' } })
 
   vim.diagnostic.config({
     update_in_insert = true,
@@ -537,35 +536,13 @@ if not vim.g.vscode then
     },
   })
 
-  --> https://github.com/creativenull/efmls-configs-nvim/tree/v1.9.0/lua/efmls-configs/formatters
-  --> https://github.com/creativenull/efmls-configs-nvim/tree/v1.9.0/lua/efmls-configs/linters
-  vim.lsp.config['efm']                   = {
-    cmd = { 'efm-langserver' },
-    filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'css', 'html', 'json', 'jsonc', 'markdown', 'yaml' },
-    init_options = { documentFormatting = true },
-    settings = {
-      rootMarkers = { ".git/" },
-      languages = {
-        javascript      = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        javascriptreact = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        typescript      = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        typescriptreact = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        css             = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        html            = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        json            = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        jsonc           = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        markdown        = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-        yaml            = { { formatCommand = "prettier --stdin-filepath '${INPUT}'", formatStdin = true } },
-      }
-    }
-  }
-
   --> https://www.youtube.com/watch?v=ooTcnx066Do
   local sendSequence = function(sequence, continue_sequence)
     if not continue_sequence then
       vim.cmd.term()
     end
     vim.fn.chansend(vim.bo.channel, { sequence .. '\r' })
+    vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig' }})
   end
 
   local fix_node_path = function()
@@ -579,16 +556,51 @@ if not vim.g.vscode then
         })
   end
 
-  map(
-    "n",
-    "<leader>L",
-    function()
-      sendSequence([[pixi g install --environment neovim-lsp "$(pixi search '*language-server' -l0 -n -1 | fzf)" ]])
-      fix_node_path()
-      vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig' }})
-    end,
-    { desc = " LSP installer" }
-  )
+  --> https://github.com/mason-org/mason-lspconfig.nvim/issues/371
+  --> https://github.com/vuejs/language-tools/issues/5381
+  vim.lsp.config['ts_ls']                 = {
+    cmd = { 'typescript-language-server', '--stdio' },
+    filetypes = { 'vue', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+    init_options = {
+      plugins = {
+        {
+          name = '@vue/typescript-plugin',
+          location = vim.env.HOME .. "/.pixi/envs/neovim-lsp/lib/node_modules/@vue/language-server/node_modules/@vue/typescript-plugin",
+          languages = { 'vue' },
+        },
+      },
+    },
+  }
+
+  vim.lsp.enable({ 'bashls', 'biome', 'clangd', 'copilot', 'cssls', 'dockerls', 'emmet_language_server', 'gopls', 'html', 'intelephense', 'jdtls', 'jsonls', 'luals', 'neocmake', 'omnisharp', 'oxfmt', 'prismals', 'ruff', 'rust_analyzer', 'sqlls', 'sqls', 'tailwindcss', 'taplo', 'terraformls', 'ts_ls', 'ty', 'yamlls' })
+
+  map("n", "<leader>L", "", { desc = " LSP installer" }) --- relaunch nvim to autostart the new installed lsp
+  map("n", "<leader>Lb", function() sendSequence('pixi g install --environment neovim-lsp bash-language-server=5.6.0') fix_node_path() end,                                                  { desc = " bash" })                      --- (no formatter press `=` to format selection)
+  map("n", "<leader>Lc", function() sendSequence('pixi g install --environment neovim-lsp clang-tools=22.1.0 --expose clangd') end,                                                          { desc = " c/c++" })                     --- (+formatter)
+  map("n", "<leader>LC", function() sendSequence('pixi g install --environment neovim-lsp omnisharp-roslyn=1.39.12') end,                                                                    { desc = " c#" })                        --- (+formatter)
+  map("n", "<leader>Ld", function() sendSequence('pixi g install --environment neovim-lsp dockerfile-language-server-nodejs=0.15.0 ') fix_node_path() end,                                   { desc = " docker" })                    --- (+formatter)
+  map("n", "<leader>Le", function() sendSequence('pixi g install --environment neovim-lsp emmet-language-server=2.8.0 ') fix_node_path() end,                                                { desc = " emmet (autoclose tag)" })     --- suggests <autoclose-this-tag> but not </close-some-open-tag> like vscode-html-language-server
+  map("n", "<leader>Lf", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g oxfmt') end,                                                                                 { desc = " oxfmt formatter/eslint" })
+  map("n", "<leader>LF", function() sendSequence('pixi g install --environment neovim-lsp biome') end,                                                                                       { desc = " biome formatter/eslint" })    --- https://biomejs.dev/internals/language-support/
+  map("n", "<leader>Lg", function() sendSequence('pixi g install --environment neovim-lsp gopls=0.20.0') end,                                                                                { desc = " go" })                        --- (+formatter)
+  map("n", "<leader>Lh", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g intelephense@1.16.5') end,                                                                   { desc = " php" })                       --- (+formatter)
+  map("n", "<leader>Lj", function() sendSequence('pixi g install --environment neovim-lsp jdtls=1.57.0') end,                                                                                { desc = " java" })                      --- (+formatter)
+  map("n", "<leader>Ll", function() sendSequence('pixi g install --environment neovim-lsp lua-language-server=3.17.1') end,                                                                  { desc = " lua for  " })               --- (+formatter)
+  map("n", "<leader>LL", function() sendSequence('winget install luals.lua-language-server || scoop install lua-language-server') end,                                                       { desc = " lua for " })                 --- (+formatter)
+  map("n", "<leader>LM", function() sendSequence('pixi g install --environment neovim-lsp neocmakelsp=0.10.1') end,                                                                          { desc = " cmake" })                     --- (+formatter +linter) https://github.com/regen100/cmake-language-server doesn't have formatter nor linter
+  map("n", "<leader>Lp", function() sendSequence('pixi g install --environment neovim-lsp prisma-language-server=31.6.0') fix_node_path() end,                                               { desc = " prisma" })                    --- (+formatter)
+  map("n", "<leader>LP", function() sendSequence('pixi g install --environment neovim-lsp ty=0.0.43 ruff=0.15.16') end,                                                                      { desc = " python" })                    --- (-formatter) means no formatter
+  map("n", "<leader>Lr", function() sendSequence('pixi g install --environment neovim-lsp rust=1.94.0 --with rust-src') end,                                                                 { desc = " rust" })                      --- (+formatter)
+  map("n", "<leader>LR", function() sendSequence('pixi g install --environment neovim-lsp terraform-ls=0.38.5') fix_node_path() end,                                                         { desc = " terraform" })                 --- (no formatter press `=` to format selection)
+  map("n", "<leader>Ls", function() sendSequence('pixi g install --environment neovim-lsp sql-language-server=1.7.1 vscode-jsonrpc=8.2.1') fix_node_path() end,                              { desc = " sqlls(-formatter +linter)" }) --- (no formatter use sqls)
+  map("n", "<leader>LS", function() sendSequence('pixi g install --environment neovim-lsp sqls=0.2.46') end,                                                                                 { desc = " sqls (+formatter -linter)" })
+  map("n", "<leader>Lt", function() sendSequence('pixi g install --environment neovim-lsp tailwindcss-language-server=0.14.29') fix_node_path() end,                                         { desc = "󱏿 tailwindcss" })
+  map("n", "<leader>LT", function() sendSequence('pixi g install --environment neovim-lsp taplo=0.10.0') end,                                                                                { desc = " toml" })                      --- (+formatter)
+  map("n", "<leader>Lx", function() sendSequence('pixi g install --environment neovim-lsp vscode-langservers-extracted=4.10.0') fix_node_path() end,                                         { desc = "   css html json" })         --- (+formatter)
+  map("n", "<leader>LX", function() sendSequence('pixi g install --environment neovim-lsp typescript=5.9.3 typescript-language-server=5.1.3 vue-language-server=3.2.8') fix_node_path() end, { desc = "   󰡄 " })                   --- (+formatter)
+  map("n", "<leader>Ly", function() sendSequence('pixi g install --environment neovim-lsp yaml-language-server=1.21.0') fix_node_path() end,                                                 { desc = " yaml" })                      --- (+formatter)
+
+  ------------------------------------------------------------------------------------------------------------------------
 
   map("n", "<leader>l", "gr", { desc = "󰗊 LSP" })
   map("n", "<leader>la", function() vim.lsp.buf.code_action() end, { desc = " code action" })
@@ -611,6 +623,7 @@ if not vim.g.vscode then
   map("n", "<leader>ls", "<cmd>Pick lsp scope='document_symbol'<cr>", { desc = " pick document symbols" })
   map("n", "<leader>lS", "<cmd>Pick lsp scope='workspace_symbol'<cr>", { desc = " pick workspace symbols" })
   map("n", "<leader>lt", "<cmd>Pick lsp scope='type_definition'<cr>", { desc = " pick typedefinition" })
+
   ------------------------------------------------------------------------------------------------------------------------
 
   map("n", "<leader>E", "", { desc = " extensions" })
@@ -631,7 +644,6 @@ if not vim.g.vscode then
       sendSequence("pixi g install nodejs pnpm && pnpm install -g @google/gemini-cli && exit", true)
       -- sendSequence([[nvim --server "$NVIM" --remote-send "<cmd>lsp enable copilot<cr>"]], true)
       vim.pack.add({{ src = 'https://github.com/folke/sidekick.nvim', version = 'v2.3.0' }})
-      vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig' }})
       autocmd({ "TermLeave" }, { once = true, command = "lsp enable copilot" })
       require("sidekick").setup({})
     end,
@@ -779,7 +791,6 @@ map("n", "<leader><leader>y", '"*y', { desc = "󰅍 yank" })
 map("n", "<leader><leader>Y", '"*yg_', { desc = "󰅍 yank forward" })
 map("x", "<leader><leader>y", '"*y', { desc = "󰅍 yank" })
 map("x", "<leader><leader>Y", 'g_"*y', { desc = "󰅍 yank forward" })
-map("n", "<leader><leader><leader>", '@*', { desc = "󰅍 run yanked text as command" })
 
 --- ╭───────────────────────────────────╮
 --- │ Operator / Motions / text objects │
