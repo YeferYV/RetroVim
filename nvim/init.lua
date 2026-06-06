@@ -4,7 +4,7 @@
 
 vim.env.CONDA_PREFIX = vim.env.CONDA_PREFIX or (vim.env.HOME .. '/.pixi/envs/retrovim')
 vim.env.PNPM_HOME    = vim.env.PNPM_HOME or (vim.env.HOME .. '/.local/share/pnpm')
-vim.env.PATH         = vim.env.PATH .. (vim.env.APPDATA and ';' or ':') .. vim.env.PNPM_HOME
+vim.env.PATH         = vim.env.PATH .. (vim.env.APPDATA and ';' or ':') .. vim.env.PNPM_HOME .. '/bin'
 vim.env.PATH         = vim.env.PATH .. (vim.env.APPDATA and ';' or ':') .. vim.env.HOME .. '/.pixi/bin'
 
 local vim            = vim --- lsp warnings
@@ -475,7 +475,6 @@ if not vim.g.vscode then
   map({ "n" }, "<C-s>", ":%s//g<Left><Left>", { desc = "Replace in Buffer" })
   map({ "x" }, "<C-s>", ":s//g<Left><Left>", { desc = "Replace in Visual_selected" })
   map({ "n" }, "<C-;>", "<C-6>", { desc = "go to last buffer" })
-  map({ "n", "t" }, "<C-\\>", function() Snacks.terminal() end, { desc = "󰨙  " }) --- vim.o.shell doesn't work on zsh.exe
   map({ "n", "t" }, "<C-h>", "<C-\\><C-n><C-w>h", { desc = "left window or [w" })
   map({ "n", "t" }, "<C-j>", "<C-\\><C-n><C-w>j", { desc = "down window or ]w" })
   map({ "n", "t" }, "<C-k>", "<C-\\><C-n><C-w>k", { desc = "up window or [w" })
@@ -566,7 +565,7 @@ if not vim.g.vscode then
     },
   }
 
-  vim.lsp.enable({ 'bashls', 'biome', 'clangd', 'copilot', 'cssls', 'dockerls', 'emmet_language_server', 'gopls', 'html', 'intelephense', 'jdtls', 'jsonls', 'luals', 'neocmake', 'omnisharp', 'oxfmt', 'prismals', 'ruff', 'rust_analyzer', 'sqlls', 'sqls', 'tailwindcss', 'taplo', 'terraformls', 'ts_ls', 'ty', 'yamlls' })
+  vim.lsp.enable({ 'bashls', 'biome', 'clangd', 'copilot', 'cssls', 'dockerls', 'emmet_language_server', 'gopls', 'html', 'intelephense', 'jdtls', 'jsonls', 'lua_ls', 'neocmake', 'omnisharp', 'oxfmt', 'prismals', 'ruff', 'rust_analyzer', 'sqlls', 'sqls', 'tailwindcss', 'taplo', 'terraformls', 'ts_ls', 'ty', 'yamlls' })
 
   map("n", "<leader>L", "", { desc = " LSP installer" }) --- relaunch nvim to autostart the new installed lsp
   map("n", "<leader>Lb", function() sendSequence('pixi g install --environment neovim-lsp bash-language-server=5.6.0') fix_node_path() end,                                                  { desc = " bash" })                      --- (no formatter press `=` to format selection)
@@ -796,7 +795,7 @@ map({ "n" }, "g\\", [[setreg('q',             'v' . getcharstr() . getcharstr() 
 map({ "n" }, "g|",  [[setreg('w',             'v' . getcharstr() . getcharstr() . '<esc>`<' ) ? "" : "@w"                                ]], { expr = true, remap = true, desc = "textobj start (| repeats)" })     --- remap=true to detect mini.ai
 map({ "x" }, "g\\", [[setreg('q','<esc>mT`<mS`Tv' . getcharstr() . getcharstr() . 'o`So'    ) ? "" : "@q"                                ]], { expr = true, remap = true, desc = "textobj end (\\ repeats)" })      --- remap=true to detect mini.ai
 map({ "x" }, "g|",  [[setreg('w','<esc>mT`>mS`Tv' . getcharstr() . getcharstr() . '`So'     ) ? "" : "@w"                                ]], { expr = true, remap = true, desc = "textobj start (| repeats)" })     --- remap=true to detect mini.ai
-map({ "x" }, "go",  [[<cmd>let _=&commentstring | set commentstring={/*\ %s\ */} | normal gc | let &commentstring=_ <cr>]], { desc = "jsx comment" })
+map( "x", "go", [[<cmd>let _=&commentstring | set commentstring={/*\ %s\ */} | normal gc<cr><cmd>let &commentstring=_<cr>]], { desc = "jsx comment" })
 map({ "n", "x" }, "gb", '"_d', { desc = "Blackhole Motion/Selected (dot to repeat)" })
 map({ "n", "x" }, "gB", '"_D', { desc = "Blackhole Linewise (dot to repeat)" })
 map({ "n", "o", "x" }, "g.", "`.", { desc = "go to last change" })

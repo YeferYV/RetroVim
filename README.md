@@ -1,8 +1,18 @@
- <img width="1366" height="768" alt="screenshot" src="https://github.com/user-attachments/assets/3d01d40d-0983-4c81-8210-e7f26a82e114" />
+ <img width="1366" height="768" alt="screenshot" src="https://github.com/user-attachments/assets/72895442-cdaa-445c-aefe-6c487d89ba13" />
 
-<div align="center"><p>
+<div align="center">
 
-warp-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builtin plugins + kanata keyboard layout
+terax-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builtin plugins + kanata keyboard layout
+
+---
+
+**[<kbd> <br> Install <br> </kbd>][Install]** 
+**[<kbd> <br> Zsh Keymaps <br> </kbd>][Zsh Keymaps]** 
+**[<kbd> <br> Keyboard-Layout <br> </kbd>][Keyboard-Layout]** 
+
+[Install]: #installation
+[Zsh Keymaps]: #zsh-keymaps
+[Keyboard-Layout]: #if-touchcursor-keyboard-layout-started
 
 </div>
 
@@ -14,7 +24,6 @@ warp-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builtin
    - [Neovim text object that starts with a/i](#neovim-text-object-that-starts-with-ai)
    - [Neovim text-object/motions/operators that starts with g](#neovim-text-objectmotionsoperators-that-starts-with-g)
 2. Terminal
-   - [Terminal keymaps](#terminal-keymaps)
    - [zsh keymaps](#zsh-keymaps)
 3. [If Touchcursor Keyboard Layout Started](#if-touchcursor-keyboard-layout-started)
 4. Installation
@@ -135,53 +144,6 @@ warp-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builtin
 
 ---
 
-## Terminal keymaps
-
-<details open><summary></summary>
-
-| Key Combination    | Description                         |
-| :----------------- | :---------------------------------- |
-| `alt+0`            | switch to last tab                  |
-| `alt+1...9`        | switch to tab 1...9                 |
-| `alt+a`            | Scroll terminal down by page        |
-| `alt+q`            | Scroll terminal up by page          |
-| `alt+d`            | Scroll terminal down                |
-| `alt+e`            | Scroll terminal up                  |
-| `alt+shift+d`      | Scroll terminal to next command     |
-| `alt+shift+e`      | Scroll terminal to previous command |
-| `alt+t`            | Scroll terminal to top              |
-| `alt+g`            | Scroll terminal to bottom           |
-| `alt+s`            | Switch to previous tab              |
-| `alt+f`            | Switch to next tab                  |
-| `alt+shift+s`      | move tab backward                   |
-| `alt+shift+f`      | move tab forward                    |
-| `alt+c`            | copy                                |
-| `alt+v`            | paste                               |
-| `ctrl+alt+h`       | split horizontal                    |
-| `ctrl+alt+v`       | split vertical                      |
-| `ctrl+shift+left`  | resize window left                  |
-| `ctrl+shift+right` | resize window right                 |
-| `ctrl+shift+up`    | resize window up                    |
-| `ctrl+shift+down`  | resize window down                  |
-| `ctrl+left`        | focus left                          |
-| `ctrl+right`       | focus rigth                         |
-| `ctrl+up`          | focus up                            |
-| `ctrl+down`        | focus down                          |
-| `ctrl+t`           | new tab                             |
-| `ctrl+w`           | close tab                           |
-| `ctrl+shift+t`     | move panel to new tab               |
-| `ctrl+shift+w`     | move panel to new window            |
-| `ctrl+shift+n`     | new window                          |
-| `ctrl+;`           | recent tab                          |
-| `shift+space`      | tmux-copy-mode-like                 |
-| `ctrl+shift+f`     | find text                           |
-| `ctrl+plus`        | zoom in                             |
-| `ctrl+minus`       | zoom out                            |
-
-</details>
-
----
-
 ## zsh keymaps
 
 <details open><summary></summary>
@@ -277,7 +239,7 @@ _    _    _              _              _    _    _
 - Powershell (windows):
 
   ```bash
-  curl.exe -L pixi.sh/install.ps1 | iex
+  irm pixi.sh/install.ps1 | iex
   pixi g install retrovim -c retronvim -c conda-forge
   ```
 
@@ -303,7 +265,7 @@ _    _    _              _              _    _    _
   - [`pixi`](https://github.com/prefix-dev/pixi)
   - [`ripgrep`](https://github.com/BurntSushi/ripgrep)
   - [`starship`](https://github.com/starship/starship)
-  - [`warp`](https://github.com/warpdotdev/warp)
+  - [`terax`](https://github.com/crynta/terax-ai)
   - [`yazi`](https://github.com/sxyazi/yazi)
   - [`zerobrew`](https://github.com/lucasgelfond/zerobrew)
   - [`zsh`](https://github.com/zsh-users/zsh)
@@ -327,6 +289,10 @@ _    _    _              _              _    _    _
 
 - `Touchcursor Keyboard Layout` on `MacOs` requires `zb install karabiner`
 
+- `terax` on `archlinux` requires `pacman -S webkit2gtk-4.1`
+
+- `terax` on `debian` requires `apt install webkit2gtk-4.1-dev`
+
 </details>
 
 ## Related projects
@@ -334,7 +300,7 @@ _    _    _              _              _    _    _
 <details open><summary></summary>
 
 - [yeferyv/RetroNvim](https://github.com/yeferyv/retronvim)
-  vscode extension with minimal whichkey, lazyvim, warp, yazi, zsh and kanata setup
+  vscode extension with minimal whichkey, lazyvim, terax, yazi, zsh and kanata setup
 
 - [yeferyv/dotfiles](https://github.com/yeferyv/dotfiles)
   retronvim + [hyprland](https://hypr.land) setup

@@ -236,7 +236,7 @@ tests:
         - zsh*
 
 about:
-  summary: minimal neovim, warp, yazi, zsh and kanata setup
+  summary: minimal neovim, terax, yazi, zsh and kanata setup
   description: |
     terax-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builtin plugins + kanata keyboard layout
   homepage: https://github.com/yeferyv/retrovim
