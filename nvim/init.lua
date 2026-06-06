@@ -196,21 +196,8 @@ if not vim.g.vscode then
     { command = [[lua vim.schedule(function() return vim.fn.bufname() == "" and vim.cmd.quit() end)]] })
 
   --> https://neovim.io/doc/user/cmdline.html#cmdline-autocompletion
-  autocmd({ "CmdlineChanged" }, { pattern = "[:/?]", command = "call wildtrigger()" })
   autocmd({ "CmdlineEnter" }, { pattern = "[/?]", command = "set pumheight=5" })
   autocmd({ "CmdlineLeave" }, { pattern = "[/?]", command = "set pumheight&" })
-  vim.opt.wildmode = "noselect:lastused,full" -- enables cmdline tab cycle
-
-  --> https://github.com/neovim/neovim/issues/9953
-  map('c', '<Up>', 'pumvisible() ? "<c-p>" : "<Up>"', { expr = true, desc = "navigate wildmenu" })
-  map('c', '<Down>', 'pumvisible() ? "<c-n>" : "<Down>"', { expr = true, desc = "navigate wildmenu" })
-
-  map('c', '<c-p>', 'pumvisible() ? "<c-e><c-p>" : "<c-p>"', { expr = true, desc = "navigate history" })
-  map('c', '<c-n>', 'pumvisible() ? "<c-e><c-n>" : "<c-n>"', { expr = true, desc = "navigate history" })
-
-  --> https://github.com/nvim-mini/mini.nvim/blob/main/lua/mini/cmdline.lua
-  map('c', '<left>', function() return vim.fn.wildmenumode() and "<space><bs><left>" or "<left>" end, { expr = true })
-  map('c', '<right>', function() return vim.fn.wildmenumode() and "<space><bs><right>" or "<right>" end, { expr = true })
 end
 
 --- ╭──────╮
@@ -443,6 +430,7 @@ if not vim.g.vscode then
   require('mini.cursorword').setup()
   require('mini.diff').setup({ view = { style = 'sign', signs = { add = '│', change = '│', delete = '│' } }, options = { wrap_goto = true } })
   require('mini.extra').setup()
+  require('mini.cmdline').setup()
   require("mini.hipatterns").setup({ highlighters = { hex_color = require("mini.hipatterns").gen_highlighter.hex_color() } })
   require('mini.icons').setup()
   require('mini.icons').mock_nvim_web_devicons()
@@ -482,8 +470,6 @@ map({ "x" }, ">", ">gv", { desc = "continious indent" })
 map({ "n" }, "<esc>", "<esc>:nohlsearch<cr>", { desc = "Clear Copilot-suggestion / search-highlight" })
 
 if not vim.g.vscode then
-  map("i", "<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]], { expr = true, desc = "next completion when no lsp" })
-  map("i", "<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { expr = true, desc = "prev completion when no lsp" })
   map({ "t" }, "<esc><esc>", "<C-\\><C-n>", { desc = "normal mode inside terminal" })
   map({ "t" }, "<S-esc>", "<C-\\><C-n>", { desc = "normal mode inside terminal" })
   map({ "n" }, "<C-s>", ":%s//g<Left><Left>", { desc = "Replace in Buffer" })
@@ -501,6 +487,14 @@ if not vim.g.vscode then
   map({ "n" }, "<right>", "<cmd>bnext<CR>", { desc = "next buffer" })
   map({ "n" }, "<left>", "<cmd>bprevious<CR>", { desc = "prev buffer" })
   map({ "n" }, "<leader>x", "<cmd>bp | bd! #<CR>", { desc = " buffer close" }) --- `bd!` forces closing terminal buffer
+
+  --> https://github.com/neovim/neovim/issues/9953
+  map("c", "<Up>", [[pumvisible()    ? "<c-p>"      : "<Up>"]], { expr = true, desc = "navigate wildmenu" })
+  map("c", "<Down>", [[pumvisible()  ? "<c-n>"      : "<Down>"]], { expr = true, desc = "navigate wildmenu" })
+  map("c", "<c-p>", [[pumvisible()   ? "<c-e><c-p>" : "<c-p>"]], { expr = true, desc = "navigate history" })
+  map("c", "<c-n>", [[pumvisible()   ? "<c-e><c-n>" : "<c-n>"]], { expr = true, desc = "navigate history" })
+  map("i", "<Tab>", [[pumvisible()   ? "<c-n>"      : "<tab>"]], { expr = true, desc = "next completion when no lsp" })
+  map("i", "<S-Tab>", [[pumvisible() ? "<c-p>"      : "<s-tab>"]], { expr = true, desc = "prev completion when no lsp" })
 end
 
 if not vim.g.vscode then
