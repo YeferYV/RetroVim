@@ -131,7 +131,6 @@ terax-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builti
 |        `/`        | `n`,`o`,`x` |        `.`        |                        | search with labels like [flash.nvim](https://github.com/folke/flash.nvim) | jumps                                    | finds and jumps                              | uses selection                          | `d/` then `search` then `label` to delete `c/` to change `v/` to select `/` to jump |
 |      `f`/`F`      | `n`,`o`,`x` |        `.`        | `;`forward `,`backward | move to next/prev char (`f` forward, `F` backward for vscode-neovim)      | jumps                                    |                                              | uses selection                          | `df,` deletes until a next `,`                                                      |
 |      `t`/`T`      | `n`,`o`,`x` |        `.`        | `;`forward `,`backward | move before next/prev char (`t` forward, `T` backward for vscode-neovim)  | jumps                                    |                                              | uses selection                          | `dt,` deletes before next `,`                                                       |
-|        `s`        |     `o`     |        `.`        |                        | surround (only on vscodevim)                                              |                                          | uses cursor position                         |                                         | `ysiw"` or `viwS"` adds `"` to word, `ds"` deletes `"`, `cs"'` replaces `"`         |
 |        `s`        |   `n`,`x`   |        `.`        |                        | +surround (followed by a=add, d=delete, r=replace)                        | followed by textobject/motion (only add) |                                              | uses selection (only add)               | `saiw"` or `viwsa"` adds `"` to word, `sd"` deletes `"`, `sr"'` replaces `"`        |
 |        `U`        |   `n`,`x`   |                   |          `U`           | whichkey repeater (inside neovim repeats `:<command>` like macros)        |                                          |                                              |                                         | `<s-space>gjUUU` repeats next-git-change (`:normal A,jkj` end of line comma)        |
 |        `Y`        |   `n`,`x`   |                   |                        | yank until end of line                                                    |                                          |                                              | uses selection                          | `v^Y` yanks line                                                                    |
@@ -292,6 +291,10 @@ _    _    _              _              _    _    _
 - `terax` on `archlinux` requires `pacman -S webkit2gtk-4.1`
 
 - `terax` on `debian` requires `apt install webkit2gtk-4.1-dev`
+
+- `terax` on `linux` requires `chsh --shell /bin/zsh` (sets zsh as default shell)
+
+- `terax` requires the setting `Font family: FiraCode Nerd Font` for icons support
 
 </details>
 

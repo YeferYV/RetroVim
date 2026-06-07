@@ -6,7 +6,7 @@
 # rm -r ~/.cache/rattler
 # pixi g install      --path ./retrovim-channel/linux-64/retrovim*                     --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel -c $PWD/appman-channel
 # pixi g install      --path ./retrovim-channel/osx-64/retrovim*                       --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel
-# pixi g install      --path ./retrovim-channel/win-64/retrovim-0.4.5-h9490d1a_1.conda --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel -c $PWD/msys2-channel
+# pixi g install      --path ./retrovim-channel/win-64/retrovim-0.0.1-h9490d1a_1.conda --force-reinstall -c conda-forge -c $PWD/firacode-channel -c $PWD/kanata-channel -c $PWD/terax-channel -c $PWD/zsh-patina-channel -c $PWD/msys2-channel -c $PWD/mingit-channel
 
 # https://pixi.prefix.dev/dev/reference/cli/pixi/upload/anaconda/
 # pixi upload anaconda --owner=retronvim retrovim*/*/*conda
@@ -130,9 +130,7 @@ build:
 
           cat >> $PREFIX/bin/git.cmd <<< '@echo off'
           cat >> $PREFIX/bin/git.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
-          cat >> $PREFIX/bin/git.cmd <<< 'set MSYSTEM=MSYS'
-          cat >> $PREFIX/bin/git.cmd <<< 'set PATH=%CONDA_PREFIX%\opt\msys2\usr\bin;%PATH%'
-          cat >> $PREFIX/bin/git.cmd <<< '%CONDA_PREFIX%/opt/msys2/usr/bin/git.exe %*'
+          cat >> $PREFIX/bin/git.cmd <<< '%CONDA_PREFIX%/opt/mingit/mingw64/bin/git.exe %*'
 
           ############################################################################################################################
 
@@ -140,16 +138,11 @@ build:
           cat >> $PREFIX/bin/kanata_touchcursor.cmd <<< 'powershell -c "Set-WinUserLanguageList -force en-US,es-US"'
           cat >> $PREFIX/bin/kanata_touchcursor.cmd <<< 'start conhost --headless %CONDA_PREFIX%/bin/kanata.exe --cfg %CONDA_PREFIX%/opt/retrovim/kanata/touchcursor.kbd'
 
-          cat >> $PREFIX/bin/kanata_touchcursor     <<< '#!/bin/bash'
-          cat >> $PREFIX/bin/kanata_touchcursor     <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$HOME/.pixi/envs/retrovim}'
-          cat >> $PREFIX/bin/kanata_touchcursor     <<< 'powershell -c "Set-WinUserLanguageList -force en-US,es-US"'
-          cat >> $PREFIX/bin/kanata_touchcursor     <<< 'start conhost --headless %CONDA_PREFIX%/bin/kanata.exe --cfg %CONDA_PREFIX%/opt/retrovim/kanata/touchcursor.kbd'
-
           ############################################################################################################################
 
           cat >> $PREFIX/bin/nvim.cmd <<< '@echo off'
           cat >> $PREFIX/bin/nvim.cmd <<< 'if %CONDA_PREFIX%=="" set CONDA_PREFIX=%USERPROFILE%\.pixi\envs\retrovim'
-          cat >> $PREFIX/bin/nvim.cmd <<< 'set SHELL=%CONDA_PREFIX%/bin/zsh'
+          cat >> $PREFIX/bin/nvim.cmd <<< 'set SHELL=%CONDA_PREFIX%\opt\msys2\usr\bin\zsh.exe'
           cat >> $PREFIX/bin/nvim.cmd <<< 'set "VIMINIT=lua vim.cmd.source(vim.env.CONDA_PREFIX .. [[/opt/retrovim/nvim/init.lua]])"'
           cat >> $PREFIX/bin/nvim.cmd <<< '%CONDA_PREFIX%/opt/neovim/bin/nvim %*'
 
@@ -186,6 +179,38 @@ build:
 
           ############################################################################################################################
 
+      # https://rattler-build.prefix.dev/latest/system_integration
+      # https://prefix.dev/blog/using-pixi-as-a-system-package-manager-with-shortcuts-and-completions
+      # https://github.com/conda-forge/alacritty-feedstock/blob/main/recipe/menu.json
+
+      - |
+        mkdir                               $PREFIX/Menu
+        cp $RECIPE_DIR/terax.{png,ico,icns} $PREFIX/Menu
+        cat                              >> $PREFIX/Menu/menu.json <<'EOF'
+        {
+          "$schema": "https://schemas.conda.org/menuinst/menuinst-1-1-3.schema.json",
+          "menu_name": "terax",
+          "menu_items": [
+            {
+              "name": "terax",
+              "description": "Lightweight (7MB) Terminal-first AI-native dev workspace",
+              "icon": "{{ MENU_DIR }}/terax.{{ ICON_EXT }}",
+              "command": [ "{{ HOME }}/.pixi/bin/terax" ],
+              "platforms": {
+                "osx": {},
+                "linux": {},
+                "win": {
+                  "command": [ "{{ HOME }}/.pixi/bin/terax.exe" ],
+                  "desktop": true
+                }
+              }
+            }
+          ]
+        }
+        EOF
+
+      ############################################################################################################################
+
 requirements:
 
   run:
@@ -200,7 +225,7 @@ requirements:
     - firacode-nerdfont-installer=3.4.0
     - fzf=0.70.0
     - kanata=1.11.0
-    - lazygit=0.60.0
+    - lazygit=0.61.0
     - less=692
     - ripgrep=15.1.0
     - starship=1.24.2
@@ -223,7 +248,8 @@ requirements:
     - if: win
       then:
         - m2-unzip=6.0.3 # required by mason.nvim
-        - msys2=2025.12.13
+        - msys2=2026.03.22
+        - mingit-busybox=2.54.0
 
 tests:
   - package_contents:

@@ -595,8 +595,8 @@ if not vim.g.vscode then
 
   map("n", "<leader>l", "", { desc = "󰗊 LSP" })
   map("n", "<leader>la", function() vim.lsp.buf.code_action() end, { desc = " code action" })
-  map("n", "<leader>lc", function() vim.lsp.buf.incoming_calls() end, { desc = "Incoming Calls" })
-  map("n", "<leader>lC", function() vim.lsp.buf.outcoming_calls() end, { desc = "Outcoming Calls" })
+  map("n", "<leader>lc", function() vim.lsp.buf.incoming_calls() end, { desc = " incoming calls" })
+  map("n", "<leader>lC", function() vim.lsp.buf.outgoing_calls() end, { desc = " outgoing calls" })
   map("n", "<leader>lb", "<cmd>Pick diagnostic<cr>", { desc = " diagnostic curr buffer" })
   map("n", "<leader>ld", "<cmd>Pick lsp scope='definition'<cr>", { desc = " pick definition" })
   map("n", "<leader>lD", "<cmd>Pick lsp scope='declaration'<cr>", { desc = " pick declaration" })
