@@ -71,6 +71,8 @@ vim.opt.shiftwidth = 2            --- the number of spaces inserted for each ind
 vim.opt.smartcase = true          --- smart case
 vim.opt.splitbelow = true         --- force all horizontal splits to go below current window
 vim.opt.splitright = true         --- force all vertical splits to go to the right of current window
+vim.opt.shellcmdflag = '-c'       --- https://github.com/neovim/neovim/issues/16957
+vim.opt.shellxquote = ''          --- https://github.com/neovim/neovim/issues/16957
 vim.opt.tabstop = 2               --- insert 2 spaces for a tab
 vim.opt.termguicolors = true      --- fixes colorscheme after :restart https://github.com/neovim/neovim/issues/38545
 vim.opt.timeoutlen = 500          --- time to wait for a mapped sequence to complete (in milliseconds)
@@ -194,10 +196,6 @@ if not vim.g.vscode then
   --- hide bufferline if `nvim -cterm` or `nvim +term`
   autocmd("TermLeave",
     { command = [[lua vim.schedule(function() return vim.fn.bufname() == "" and vim.cmd.quit() end)]] })
-
-  --> https://neovim.io/doc/user/cmdline.html#cmdline-autocompletion
-  autocmd({ "CmdlineEnter" }, { pattern = "[/?]", command = "set pumheight=5" })
-  autocmd({ "CmdlineLeave" }, { pattern = "[/?]", command = "set pumheight&" })
 end
 
 --- ╭──────╮
@@ -595,7 +593,7 @@ if not vim.g.vscode then
 
   ------------------------------------------------------------------------------------------------------------------------
 
-  map("n", "<leader>l", "gr", { desc = "󰗊 LSP" })
+  map("n", "<leader>l", "", { desc = "󰗊 LSP" })
   map("n", "<leader>la", function() vim.lsp.buf.code_action() end, { desc = " code action" })
   map("n", "<leader>lc", function() vim.lsp.buf.incoming_calls() end, { desc = "Incoming Calls" })
   map("n", "<leader>lC", function() vim.lsp.buf.outcoming_calls() end, { desc = "Outcoming Calls" })
@@ -675,22 +673,7 @@ if not vim.g.vscode then
     end,
     { desc = " fzf files" }
   )
-  map(
-    "n",
-    "<leader>ft",
-    function()
-      vim.cmd.terminal(
-        [[ rg "" --color=always --line-number --sort=path | ]] ..
-        [[ fzf --no-sort --layout=reverse --ansi --delimiter : ]] ..
-        [[ --preview "bat --color=always {1} --highlight-line {2}" ]] ..
-        [[ --preview-window "up,60\%,+{2},nohidden" ]] ..
-        [[ --bind "enter:become(nvim --server $NVIM --remote-send '<cmd>edit +{2} {1}<cr>')" ]]
-      )
-      vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! term*$NVIM* | set laststatus=3]] })
-    end,
-    { desc = " fzf text" }
-  )
+  map("n", "<leader>ft", "<cmd>Pick grep_live<cr>", { desc = " fzf text" })
   map("n", "<leader>fr", "<cmd>Pick oldfiles<cr>", { desc = "󱋡 recent files" })
   map("n", '<leader>f"', "<cmd>Pick registers<cr>", { desc = '󱛢 register (:help quote)' })
   map("n", "<leader>f'", "<cmd>Pick marks<cr>", { desc = " bookmarks" })
@@ -753,11 +736,11 @@ if not vim.g.vscode then
     "n",
     "<leader>o",
     function()
-      local curr_file = vim.fn.expand('%:p')
+      local curr_file = vim.fs.normalize(vim.fn.expand('%:p'))
       vim.cmd.terminal(
-        'echo ' .. curr_file .. '              > ~/.yazi;' ..
-        'yazi ' .. curr_file .. ' --chooser-file ~/.yazi;' ..
-        'nvim --server $NVIM --remote     "$(cat ~/.yazi)";'
+        'echo ' .. curr_file .. '              > $HOME/.yazi;' ..
+        'yazi ' .. curr_file .. ' --chooser-file $HOME/.yazi;' ..
+        'nvim --server $NVIM --remote     "$(cat $HOME/.yazi)";'
         -- .. 'nvim --server $NVIM --remote-send "<cmd>bdelete! \\#<cr>"'
       )
       vim.cmd.set("laststatus=0")
