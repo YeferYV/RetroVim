@@ -53,8 +53,7 @@ jobs:
           ############################################################################################################################################################
 
           git submodule update --init --depth 1
-          rm -rf ./nvim/plugins/snacks.nvim/tests
-          rm -rf ./nvim/plugins/mini.nvim/tests
+          rm -rf ./nvim/plugins/*/tests
 
           curl -L pixi.sh/install.sh | sh
           export PATH="$HOME/.pixi/bin:$PATH"
@@ -68,9 +67,12 @@ jobs:
           rattler-build publish .conda/retronvim.yaml --target-platform osx-64   --to https://anaconda.org/retronvim --build-number=+1 --package-format conda:22
           rattler-build publish .conda/retronvim.yaml --target-platform win-64   --to https://anaconda.org/retronvim --build-number=+1 --package-format conda:22
 
+          ############################################################################################################################################################
+
       - name: Github release 📦
         if: ${{ steps.release.outputs.release_created }}
         run: |
-          gh release upload ${{ steps.release.outputs.tag_name }} output/linux-64/*.conda
-          gh release upload ${{ steps.release.outputs.tag_name }} output/osx-64/*.conda
-          gh release upload ${{ steps.release.outputs.tag_name }} output/win-64/*.conda
+          cp output/linux-64/*.conda ./retronvim-linux-64.conda
+          cp output/osx-64/*.conda   ./retronvim-osx-64.conda
+          cp output/win-64/*.conda   ./retronvim-win-64.conda
+          gh release upload ${{ steps.release.outputs.tag_name }} *.conda

@@ -73,6 +73,7 @@ vim.opt.splitbelow = true         --- force all horizontal splits to go below cu
 vim.opt.splitright = true         --- force all vertical splits to go to the right of current window
 vim.opt.shellcmdflag = '-c'       --- https://github.com/neovim/neovim/issues/16957
 vim.opt.shellxquote = ''          --- https://github.com/neovim/neovim/issues/16957
+vim.opt.shellslash = true         --- fixes windows path and Vexplore path
 vim.opt.tabstop = 2               --- insert 2 spaces for a tab
 vim.opt.termguicolors = true      --- fixes colorscheme after :restart https://github.com/neovim/neovim/issues/38545
 vim.opt.timeoutlen = 500          --- time to wait for a mapped sequence to complete (in milliseconds)
@@ -112,6 +113,7 @@ if not vim.g.vscode then
   -- vim.g.netrw_keepdir = 0                  -- don't close netrw after picking a file
   -- vim.g.netrw_altv = 1                     -- open file to the right
   -- vim.g.netrw_special_syntax = 0           -- desactiva los colores por defecto de netrw
+  -- vim.g.netrw_fastbrowse = 1               -- re-use directory listings
 end
 
 --- ╭──────────────╮
@@ -123,11 +125,10 @@ local mini_icons = require('mini.icons')
 local netrw_ns = vim.api.nvim_create_namespace('netrw_icons')
 
 local function set_netrw_icons(ev)
-  -- https://www.reddit.com/r/neovim/comments/lovv9i/how_can_i_stop_netrw_creating_no_name_buffers_on_toggle
-  -- vim.bo.bufhidden = 'hide' --- if 'wipe' then vim.cmd.buffer() can't find ev.buf
 
   M.netrw_buf = ev.buf
   autocmd('WinClosed', { buffer = ev.buf, once = true, callback = function() M.netrw_buf = nil end })
+  autocmd('WinClosed', { buffer = ev.buf, once = true, callback = function(ev) M.netrw_cursor = vim.api.nvim_win_get_cursor(tonumber(ev.match)) end })
 
   map("n", "l", "<cr>", { buffer = ev.buf, remap = true })
   map("n", "h", "<cr>", { buffer = ev.buf, remap = true })
@@ -724,11 +725,15 @@ if not vim.g.vscode then
       vim.cmd.Vexplore({bang = true})
 
       --- https://superuser.com/questions/1531456/how-to-reveal-a-file-in-vim-netrw-treeview
-      --- focus current file (needs to address more edge cases)
-      for _, dir in ipairs(path) do
-        vim.fn.search(dir)
+      if M.netrw_cursor then
+        vim.schedule(function()
+          pcall(vim.api.nvim_win_set_cursor, 0, M.netrw_cursor)
+        end)
+      else
+        for _, dir in ipairs(path) do
+          vim.fn.search(dir)
+        end
       end
-      vim.cmd.normal("zb") -- redraw at bottom
     end,
     { desc = "󰙅 explorer" }
   )
