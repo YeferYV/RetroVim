@@ -1,3 +1,5 @@
+# Changelog
+
 ## [0.0.1](https://github.com/YeferYV/RetroVim/compare/v0.0.1...v0.0.1) (2026-06-10)
 
 
