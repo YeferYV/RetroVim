@@ -669,8 +669,9 @@ if not vim.g.vscode then
     "<leader>ff",
     function()
       vim.cmd.terminal([[ nvim --server $NVIM --remote "$(rg --files --sortr=path | fzf --no-sort --preview-window=nohidden)"]])
+      vim.api.nvim_buf_set_name(0, "fzf")
       vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! term*$NVIM* | set laststatus=3]] })
+      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! fzf | set laststatus=3]] })
     end,
     { desc = " fzf files" }
   )
@@ -748,6 +749,7 @@ if not vim.g.vscode then
         'nvim --server $NVIM --remote     "$(cat $HOME/.yazi)";'
         -- .. 'nvim --server $NVIM --remote-send "<cmd>bdelete! \\#<cr>"'
       )
+      vim.cmd.file("yazi")
       vim.cmd.set("laststatus=0")
       autocmd("TermClose", { buffer = vim.fn.bufnr(), command = [[silent! bdelete! ]] .. vim.fn.bufnr() .. [[ | set laststatus=3]], once = true })
     end,

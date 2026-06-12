@@ -62,8 +62,6 @@ prepend_keymap = [
 	{ on = [ "s", "c" ], run = """ shell          -- google-chrome %s || google-chrome-stable %s """, for = "unix",    desc = " chrome (to drag and drop)" }, # or copy file path into the browser to drag and drop from download icon (images are draggable, some files you need right-click to download)
 	{ on = [ "s", "c" ], run = """ shell          -- chrome  %s                                  """, for = "windows", desc = " chrome (to drag and drop)" }, # or copy file path into the browser to drag and drop from download icon (images are draggable, some files you need right-click to download)
 	{ on = [ "s", "D" ], run = """ search fd                                                     """,                  desc = " fd" },
-	{ on = [ "s", "f" ], run = """ shell --block  -- nvim -c "lua Snacks.picker.files()"         """,                  desc = " fzf" },     # on current directory
-	{ on = [ "s", "g" ], run = """ shell --block  -- nvim -c "lua Snacks.picker.grep()"          """,                  desc = " rg (ctrl+f scrolls)" }, # on current directory, type `.` dot to show all files
 	{ on = [ "s", "l" ], run = """ shell --block  -- lazygit                                     """,                  desc = "󰊢 lazygit" },
 	{ on = [ "s", "m" ], run = """ shell --orphan -- mpv %s                                      """,                  desc = " mpv" },
 	{ on = [ "s", "n" ], run = """ shell --block  -- nvim %s                                     """,                  desc = " neovim" },    # opens all selections
