@@ -46,7 +46,7 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         uses: actions/checkout@v4
 
-      - name: Publish to vscode marketplace and anaconda.org 🚀
+      - name: Publish to anaconda.org 🚀
         if: ${{ steps.release.outputs.release_created }}
         run: |
 

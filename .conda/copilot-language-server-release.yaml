@@ -6,13 +6,13 @@
 # rm -r ~/.cache/rattler
 # pixi g install      --path ./copilot-channel/linux-64/copilot*                       --force-reinstall
 # pixi g install      --path ./copilot-channel/osx-64/copilot*                         --force-reinstall
-# pixi g install      --path ./copilot-channel/win-64/copilot-1.449.0-h9490d1a_1.conda --force-reinstall
+# pixi g install      --path ./copilot-channel/win-64/copilot-1.506.0-h9490d1a_1.conda --force-reinstall
 
 # https://pixi.prefix.dev/dev/reference/cli/pixi/upload/anaconda/
 # pixi upload anaconda --owner=retronvim copilot*/*/*conda
 
 context:
-  version: 1.449.0
+  version: 1.506.0
 
 package:
   name: copilot-language-server-release
