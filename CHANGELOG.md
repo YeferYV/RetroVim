@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/YeferYV/RetroVim/compare/v0.0.2...v0.0.3) (2026-06-15)
+
+
+### Bug Fixes
+
+* **retronvim.yaml:** realpath equivalent for batch is `~f` ([5749bea](https://github.com/YeferYV/RetroVim/commit/5749bea42748ee46ca73fe2998b11c47e2d8fd8b))
+
 ## [0.0.2](https://github.com/YeferYV/RetroVim/compare/v0.0.1...v0.0.2) (2026-06-12)
 
 
