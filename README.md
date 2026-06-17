@@ -251,7 +251,6 @@ _    _    _              _              _    _    _
 **Plugins**
 
 - RetroVim.conda is shipped with
-  - [`appman`](https://github.com/ivan-hc/Am)
   - [`bat`](https://github.com/sharkdp/bat)
   - [`eza`](https://github.com/eza-community/eza)
   - [`firacode_nerd_font`](https://github.com/ryanoasis/nerd-fonts)
@@ -260,6 +259,7 @@ _    _    _              _              _    _    _
   - [`git`](https://github.com/git-for-windows/git)
   - [`kanata`](https://github.com/jtroo/kanata)
   - [`lazygit`](https://github.com/jesseduffield/lazygit)
+  - [`mise`](https://github.com/jdx/mise)
   - [`neovim`](https://neovim.io)
   - [`pixi`](https://github.com/prefix-dev/pixi)
   - [`ripgrep`](https://github.com/BurntSushi/ripgrep)
@@ -275,6 +275,7 @@ _    _    _              _              _    _    _
   - [`mini.nvim`](https://github.com/echasnovski/mini.nvim) (shipped as git-submodule)
   - [`copilot`](https://github.com/github/copilot-language-server-release) (shipped with sidekick.nvim)
   - [`flash.nvim`](https://github.com/folke/flash.nvim)
+  - [`neotype`](https://github.com/rodolfo-arg/neotype)
   - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
   - [`sidekick.nvim`](https://github.com/folke/sidekick.nvim) (free copilot nes + agents integration like gemini-cli)
   - [`supermaven`](https://github.com/supermaven-inc/supermaven-nvim) (free copilot)
@@ -294,7 +295,7 @@ _    _    _              _              _    _    _
 
 - `terax` on `linux` requires `chsh --shell /bin/zsh` (sets zsh as default shell)
 
-- `terax` requires the setting `Font family: FiraCode Nerd Font` for icons support
+- `terax` requires the setting `Font family: FiraCode Nerd Font` for icons support (`pixi exec --channel retronvim -- firacode-nerdfont-installer` to install firacode font)
 
 </details>
 
