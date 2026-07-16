@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/YeferYV/RetroVim/compare/v0.0.3...v0.0.4) (2026-07-16)
+
+
+### Bug Fixes
+
+* **zsh:** zsh-autosuggestion as git-submodule ([3370660](https://github.com/YeferYV/RetroVim/commit/3370660ddd9201db41afe5571eb82d3e605cfb0a))
+
 ## [0.0.3](https://github.com/YeferYV/RetroVim/compare/v0.0.2...v0.0.3) (2026-06-15)
 
 
