@@ -259,7 +259,6 @@ _    _    _              _              _    _    _
   - [`git`](https://github.com/git-for-windows/git)
   - [`kanata`](https://github.com/jtroo/kanata)
   - [`lazygit`](https://github.com/jesseduffield/lazygit)
-  - [`mise`](https://github.com/jdx/mise)
   - [`neovim`](https://neovim.io)
   - [`pixi`](https://github.com/prefix-dev/pixi)
   - [`ripgrep`](https://github.com/BurntSushi/ripgrep)
