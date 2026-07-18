@@ -245,7 +245,26 @@ _    _    _              _              _    _    _
 - SSH/Bash/Zsh (linux/macos):
 
   ```bash
-  sh <(curl https://pkgx.sh) pixi g install retrovim -c retronvim -c conda-forge --with pixi
+  curl -L pixi.sh/install.sh | sh
+  pixi g install retrovim -c retronvim -c conda-forge
+  ```
+
+- npm + any package manager:
+
+  ```bash
+  # brew   install bat eza font-fira-code-nerd-font fzf git kanata lazygit neovim ripgrep starship yazi zsh zsh-patina 7zip pixi
+  # pixi g install bat eza font-fira-code-nerd-font fzf git kanata lazygit nvim   ripgrep starship yazi zsh zsh-patina 7zip      -c retronvim -c conda-forge -e retronvim
+
+  npm install -g retrovim
+  ```
+
+- pip + any package manager:
+
+  ```bash
+  # brew   install bat eza font-fira-code-nerd-font fzf git kanata lazygit neovim ripgrep starship yazi zsh zsh-patina 7zip pixi
+  # pixi g install bat eza font-fira-code-nerd-font fzf git kanata lazygit nvim   ripgrep starship yazi zsh zsh-patina 7zip      -c retronvim -c conda-forge -e retronvim
+
+  pip install retrovim
   ```
 
 **Plugins**
@@ -308,31 +327,10 @@ _    _    _              _              _    _    _
 - [yeferyv/dotfiles](https://github.com/yeferyv/dotfiles)
   retronvim + [hyprland](https://hypr.land) setup
 
-- [yazelix](https://github.com/luccahuguet/yazelix)
-  terminal IDE
-
-- [nativevim](https://github.com/boltlessengineer/NativeVim)
-  neovim config without plugins
-
-- [lazyvim](https://github.com/lazyvim/lazyvim)
-  neovim IDE using 32 plugins (with copilot, agents, text-objects, whichkey ...)
-
 - [binvim](https://github.com/bgunnarsson/binvim/)
   neovim IDE written in rust (with copilot, agents, text-objects, whichkey ...)
 
-- [evil-helix](https://github.com/usagi-flow/evil-helix)
-  helix fork with vim keybindings, text-objects, whichkey ... (no dot-to-repeat)
-
-- [reovim](https://github.com/ds1sqe/reovim)
-  neovim IDE written in rust (no copilot, no agents)
-
-- [red](https://github.com/codersauce/red)
-  neovim IDE written in rust (no copilot, no agents)
-
-- [fresh](https://github.com/sinelaw/fresh)
-  neovim IDE written in rust (no copilot, no agents, no text-objects, no whichkey)
-
-- [termide](https://github.com/termide/termide)
-  neovim IDE written in rust (no copilot, no agents, no text-objects, no whichkey)
+- [terax](https://github.com/crynta/terax-ai)
+  agentic terminal + neovim-like IDE
 
 </details>
