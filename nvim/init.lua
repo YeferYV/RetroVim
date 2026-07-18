@@ -2,26 +2,25 @@
 --- │ Plugins │
 --- ╰─────────╯
 
-local vim            = vim --- lsp warnings
-local colon          = vim.env.APPDATA and ';' or ':'
+local vim          = vim --- lsp warnings
+local colon        = vim.env.APPDATA and ';' or ':'
+local mini_path    = vim.env.RETRONVIM_PREFIX and (vim.env.RETRONVIM_PREFIX .. '/nvim/plugins/mini.nvim') or ''
+local plugins_path = vim.fn.expand(vim.fs.normalize(vim.fn.stdpath("data"))  .. '/site/pack/core/opt/*', 0, 1)
 
-vim.env.CONDA_PREFIX = vim.env.CONDA_PREFIX or (vim.env.HOME .. '/.pixi/envs/retrovim')
-vim.env.PNPM_HOME    = vim.env.PNPM_HOME or (vim.env.HOME .. '/.local/share/pnpm')
-vim.env.PATH         = vim.env.PATH .. colon .. vim.env.HOME .. '/.pixi/bin'
-vim.env.PATH         = vim.env.PATH .. colon .. vim.env.PNPM_HOME
-vim.env.PATH         = vim.env.PATH .. colon .. vim.env.PNPM_HOME .. '/global/5/node_modules/.bin'
-
-local mini_path      = vim.env.CONDA_PREFIX .. '/opt/retrovim/nvim/plugins/mini.nvim'
+vim.env.PNPM_HOME = vim.env.PNPM_HOME or (vim.env.HOME .. '/.local/share/pnpm')
+vim.env.PATH      = vim.env.PATH .. colon .. vim.env.HOME .. '/.pixi/bin'
+vim.env.PATH      = vim.env.PATH .. colon .. vim.env.PNPM_HOME
+vim.env.PATH      = vim.env.PATH .. colon .. vim.env.PNPM_HOME .. '/global/5/node_modules/.bin'
 
 if not vim.loop.fs_stat(mini_path) then
   vim.pack.add({ { src = 'https://github.com/nvim-mini/mini.nvim', version = 'v0.18.0' } })
 end
 
 vim.opt.rtp:prepend(mini_path)
-vim.opt.rtp:append(vim.fn.expand(vim.fn.stdpath('data') .. '/site/pack/core/opt/*', 0, 1))
+vim.opt.rtp:append(plugins_path)
 
-local map = vim.keymap.set
-local autocmd = vim.api.nvim_create_autocmd
+local map       = vim.keymap.set
+local autocmd   = vim.api.nvim_create_autocmd
 local _, vscode = pcall(require, "vscode-neovim")
 vim.g.mapleader = " " --- <leader> key
 
@@ -36,8 +35,8 @@ if not vim.g.vscode then
   map({ 'i', 'n', 'x' }, '<a-;>', function() require("sidekick").nes_jump_or_apply() end, { desc = ' nes apply' }) --- <m-;> doesn't work with pum
   map({ 'i', 'n', 'x' }, '<a-,>', function() require("sidekick.nes").update() end, { desc = ' nes update' })
   map({ 'i', 'n', 'x' }, "<a-'>", function() require("sidekick.nes").clear() end, { desc = ' nes clear' })
-  map({ 'i', 'n', 'x' }, '<leader>lg', "<cmd>Sidekick cli toggle name=gemini<cr>", { desc = '󰫣 Gemini cli' })
-  map({ 'i', 'n', 'x' }, '<leader>lG', "<cmd>Sidekick cli prompt<cr>", { desc = '󰫣 Gemini prompt' })
+  map({ 'i', 'n', 'x' }, '<leader>lg', "<cmd>Sidekick cli toggle name=opencode<cr>", { desc = '󰵰 opencode cli' })
+  map({ 'i', 'n', 'x' }, '<leader>lG', "<cmd>Sidekick cli prompt<cr>", { desc = '󰵰 opencode prompt' })
 
   pcall(function() require("sidekick").setup({}) end)
 end
@@ -93,32 +92,24 @@ vim.opt.listchars = {
 vim.treesitter.start = function() end --- nvim.conda on windows doesn't ship parser/lua.dll etc, lsp has their own syntax highlightting
 
 if not vim.g.vscode then
-  vim.opt.pumborder = 'rounded'               --- enable mini.completion border
-  vim.opt.cmdheight = 0                       --- more space in the neovim command line for displaying messages
-  vim.opt.laststatus = 3                      --- laststatus=3 global status line (line between splits)
-  vim.opt.number = true                       --- set numbered lines
-  vim.opt.scrolloff = 3                       --- vertical scrolloff
-  vim.opt.sidescrolloff = 3                   --- horizontal scrolloff
-  vim.opt.virtualedit = "all"                 --- allow cursor bypass end of line
-  vim.o.foldcolumn = '1'                      --- if '1' will show clickable fold signs
-  vim.o.foldlevel = 99                        --- Disable folding at startup
-  vim.o.foldmethod = "expr"                   --- expr = specify an expression to define folds
-  vim.o.foldexpr = 'v:lua.vim.lsp.foldexpr()' --- if folding using treesitter then 'v:lua.vim.treesitter.foldexpr()'
+  vim.opt.pumborder = 'rounded'                 --- enable mini.completion border
+  vim.opt.cmdheight = 0                         --- more space in the neovim command line for displaying messages
+  vim.opt.laststatus = 3                        --- laststatus=3 global status line (line between splits)
+  vim.opt.number = true                         --- set numbered lines
+  vim.opt.scrolloff = 3                         --- vertical scrolloff
+  vim.opt.sidescrolloff = 3                     --- horizontal scrolloff
+  vim.opt.virtualedit = "all"                   --- allow cursor bypass end of line
+  vim.o.foldcolumn = '1'                        --- if '1' will show clickable fold signs
+  vim.o.foldlevel = 99                          --- Disable folding at startup
+  vim.o.foldmethod = "expr"                     --- expr = specify an expression to define folds
+  vim.o.foldexpr = 'v:lua.vim.lsp.foldexpr()'   --- if folding using treesitter then 'v:lua.vim.treesitter.foldexpr()'
   vim.o.fillchars = [[eob: ,fold: ,foldinner: ,foldopen:,foldsep: ,foldclose:]]
-  vim.g.netrw_banner = 0                      -- Hide the massive top banner
-  vim.g.netrw_liststyle = 3                   -- Use tree-style view instead of a flat list
-  vim.g.netrw_browse_split = 4                -- Open files in a new vertical split on the right
-  vim.g.netrw_winsize = 18                    -- Set the width of the netrw split window (percentage)
-  vim.g.netrw_preview = 1                     -- open in a split window
-  vim.g.netrw_list_hide =                     -- absolute path not supported only relative path works
-      vim.cmd.packadd('netrw') and
-      vim.fn["netrw_gitignore#Hide"]()
-      .. ",.git"
-  -- vim.g.netrw_localcopydircmd = 'cp -r'    -- Change copy command to support recursive copying
-  -- vim.g.netrw_keepdir = 0                  -- don't close netrw after picking a file
-  -- vim.g.netrw_altv = 1                     -- open file to the right
-  -- vim.g.netrw_special_syntax = 0           -- desactiva los colores por defecto de netrw
-  -- vim.g.netrw_fastbrowse = 1               -- re-use directory listings
+  vim.g.netrw_banner = 0                        --- Hide the massive top banner
+  vim.g.netrw_liststyle = 3                     --- Use tree-style view instead of a flat list
+  vim.g.netrw_browse_split = 4                  --- Open files in a new vertical split on the right
+  vim.g.netrw_winsize = 18                      --- Set the width of the netrw split window (percentage)
+  vim.g.netrw_preview = 1                       --- open in a split window
+  vim.g.netrw_list_hide = [[.git,node_modules]] --- vim.fn["netrw_gitignore#Hide"]() --> conflicts with RetroVim/.pip/nvim/__init__.py
 end
 
 --- ╭──────────────╮
@@ -204,9 +195,9 @@ if not vim.g.vscode then
     { command = [[lua vim.schedule(function() return vim.fn.bufname() == "" and vim.cmd.quit() end)]] })
 end
 
---- ╭──────╮
---- │ Mini │
---- ╰──────╯
+--- ╭───────────╮
+--- │ Mini.nvim │
+--- ╰───────────╯
 
 local gen_ai_spec = require('mini.extra').gen_ai_spec
 local mini_clue = require("mini.clue")
@@ -563,7 +554,7 @@ if not vim.g.vscode then
 
   if vim.fn.executable('biome') == 1 then vim.lsp.enable({ 'biome' }) end
   if vim.fn.executable('oxfmt') == 1 then vim.lsp.enable({ 'oxfmt' }) end
-  if vim.fn.executable('ty') == 1 then vim.lsp.enable({ 'ty' }) end
+  if vim.fn.executable('ty') == 1 then vim.lsp.enable({ 'ty' }) end ---> uv env ---> required by ty
   if vim.fn.executable('tailwindcss-language-server') == 1 then vim.lsp.enable({ 'tailwindcss' }) end
   if vim.fn.executable('vscode-json-language-server') == 1 then vim.lsp.enable({ 'jsonls' }) end
   if vim.fn.executable('yaml-language-server') == 1 then vim.lsp.enable({ 'yamlls' }) end
@@ -634,7 +625,7 @@ if not vim.g.vscode then
     "n",
     "<leader>Ek",
     function()
-      sendSequence("mise use --global gemini github:github/copilot-language-server-release; exit")
+      sendSequence("mise use --global opencode github:github/copilot-language-server-release; exit")
       vim.pack.add({{ src = 'https://github.com/folke/sidekick.nvim', version = 'v2.3.0' }})
       autocmd({ "TermLeave" }, { once = true, command = "lsp enable copilot" })
       require("sidekick").setup({})
