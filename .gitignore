@@ -1,2 +1,3 @@
 .conda/*channel
 .conda/*output
+nvim/plugins/*/tests
