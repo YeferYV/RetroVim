@@ -1,3 +1,16 @@
 {
-  "version": "0.0.3"
+  "name": "retrovim",
+  "version": "0.0.4",
+  "description": "minimal neovim, yazi, zsh and kanata setup",
+  "bin": {
+    "kanata_touchcursor": ".npm/kanata_touchcursor.js",
+    "nvim": ".npm/nvim.js",
+    "yazi": ".npm/yazi.js",
+    "zsh": ".npm/zsh.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yeferyv/retrovim"
+  },
+  "license": "GPL3"
 }
