@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.4](https://github.com/YeferYV/RetroVim/compare/v0.0.3...v0.0.4) (2026-08-07)
+
+
+### Bug Fixes
+
+* **retrovim.yaml:** trampoline not generating shim for nvim.cmd ([4ebc00a](https://github.com/YeferYV/RetroVim/commit/4ebc00a01d44fa44aa3e29f2b4519dde87cc9cf9))
+* **zsh:** `ctrl+r` conflicts with builtin `zsh-autosuggestions` ([a7a0f93](https://github.com/YeferYV/RetroVim/commit/a7a0f932810f3d7dbaf0e1148224434c7c8bbab4))
+* **zsh:** zsh-autosuggestion as git-submodule ([3370660](https://github.com/YeferYV/RetroVim/commit/3370660ddd9201db41afe5571eb82d3e605cfb0a))
+
 ## [0.0.3](https://github.com/YeferYV/RetroVim/compare/v0.0.2...v0.0.3) (2026-06-15)
 
 
