@@ -10,6 +10,7 @@ local plugins_path = vim.fn.expand(vim.fs.normalize(vim.fn.stdpath("data"))  .. 
 vim.env.PNPM_HOME = vim.env.PNPM_HOME or (vim.env.HOME .. '/.local/share/pnpm')
 vim.env.PATH      = vim.env.PATH .. colon .. vim.env.HOME .. '/.pixi/bin'
 vim.env.PATH      = vim.env.PATH .. colon .. vim.env.PNPM_HOME
+vim.env.PATH      = vim.env.PATH .. colon .. vim.env.PNPM_HOME .. '/bin'
 vim.env.PATH      = vim.env.PATH .. colon .. vim.env.PNPM_HOME .. '/global/5/node_modules/.bin'
 
 if not vim.loop.fs_stat(mini_path) then

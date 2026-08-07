@@ -2,17 +2,18 @@
 # │ shell configs │
 # ╰───────────────╯
 
-# time zsh -i -c exit                                            # to calculate startup time
-autoload -U compinit                                             # enable command completion
-bindkey -v '^?' backward-delete-char                             # enable vi-mode with backward-delete-char
-setopt share_history                                             # share history across sessions
-setopt append_history                                            # required by fzf and autosuggestions
-setopt inc_append_history                                        # save to history after running a command
-setopt interactive_comments                                      # allow comments
-zstyle ":completion:*" menu select                               # <tab><tab> to enter menu completion
-precmd () { printf "\033]0; $(basename ${PWD/~/\~}) \a" }        # tmux/wezterm CWD status/title
-[[ "$OSTYPE" == "cygwin" ]] && export HOME="/c/Users/$USERNAME"  # for git-bash / msys2 home
-[[ "$OSTYPE" == "cygwin" ]] && export DOTEXE=".exe"              # for git-bash / msys2
+# time zsh -i -c exit                                              # to calculate startup time
+autoload -U compinit                                               # enable command completion
+bindkey -v '^?' backward-delete-char                               # enable vi-mode with backward-delete-char
+setopt share_history                                               # share history across sessions
+setopt append_history                                              # required by fzf and autosuggestions
+setopt inc_append_history                                          # save to history after running a command
+setopt interactive_comments                                        # allow comments
+zstyle ":completion:*" menu select                                 # <tab><tab> to enter menu completion
+precmd () { printf "\033]0; $(basename ${PWD/~/\~}) \a" }          # tmux/wezterm CWD status/title
+[[ "$OSTYPE" == "cygwin" ]] && export HOME="/c/Users/$USERNAME"    # for git-bash / msys2 home
+[[ "$OSTYPE" == "cygwin" ]] && export DOTEXE=".exe"                # for git-bash / msys2
+[[ -v TERAX_TERMINAL     ]] && export ZDOTDIR=$TERAX_USER_ZDOTDIR  # terax shell integration changes ZDOTDIR
 
 alias  apt="sudo apt -y"
 alias  grep="grep --color=auto"
@@ -37,7 +38,7 @@ export SHELL="zsh$DOTEXE" # for nvim terminal if bash is the default shell
 export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
 export VIMINIT="lua vim.cmd.source(vim.env.ZDOTDIR .. [[/../nvim/init.lua]])" # luafile theorically is faster then `source` and `dofile`
 export YAZI_CONFIG_HOME="$ZDOTDIR/../yazi"
-export ZSH_PATINA_CONFIG_PATH="$ZDOTDIR/zsh-patina.toml"
+export ZSH_PATINA_CONFIG_PATH="$ZDOTDIR/zsh-patina.toml" # zsh-patina restart ---> after changing zsh-patina.toml
 export ZEROBREW_ROOT="$HOME/.local/share/zerobrew"
 export ZEROBREW_PREFIX="$HOME/.local/share/zerobrew/prefix"
 export PKG_CONFIG_PATH="$ZEROBREW_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
@@ -54,7 +55,8 @@ export PATH="$HOME/.pixi/envs/retrovim/bin:$PATH"
 export PATH="$HOME/.pixi/envs/retrovim/Library/bin:$PATH"
 export PATH="$HOME/.pixi/envs/retrovim/Library/usr/bin:$PATH"
 export PATH="$HOME/.pixi/bin:$PATH"
-export PATH="$PATH:$PNPM_HOME" # $(pnpm setup)
+export PATH="$PATH:$PNPM_HOME"     # $(pnpm setup)
+export PATH="$PATH:$PNPM_HOME/bin" # $(pnpm setup)
 export PATH="$PATH:$PNPM_HOME/global/5/node_modules/.bin" # $(pnpm approve-builds -g)
 export PATH="$PATH:$ZEROBREW_PREFIX/bin"
 
