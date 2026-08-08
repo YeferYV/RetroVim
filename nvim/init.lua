@@ -600,7 +600,7 @@ if not vim.g.vscode then
   map("n", "<leader>LT", function() sendSequence('pixi g install --environment neovim-lsp taplo=0.10.0') end,                                                                                { desc = " toml" })                      --- (+formatter)
   map("n", "<leader>Lx", function() sendSequence('pixi g install --environment neovim-lsp vscode-langservers-extracted=4.10.0') fix_node_path() end,                                         { desc = "   css html json" })         --- (+formatter)
   map("n", "<leader>LX", function() sendSequence('pixi g install --environment neovim-lsp typescript=5.9.3 typescript-language-server=5.1.3 vue-language-server=3.2.8') fix_node_path() end, { desc = "   󰡄 " })                   --- (+formatter)
-  map("n", "<leader>LY", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g typescript@7') end,                                                                          { desc = " typescript 7" })
+  map("n", "<leader>LY", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g typescript@7') end,                                                                          { desc = "    typescript 7" })
   map("n", "<leader>Ly", function() sendSequence('pixi g install --environment neovim-lsp yaml-language-server=1.21.0') fix_node_path() end,                                                 { desc = " yaml" })                      --- (+formatter)
 
   ------------------------------------------------------------------------------------------------------------------------

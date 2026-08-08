@@ -1,19 +1,19 @@
 # https://rattler-build.prefix.dev/latest/tutorials/repackaging
-# rattler-build build   --recipe retrovim.yaml --target-platform linux-64      --output-dir retronvim-channel
-# rattler-build build   --recipe retrovim.yaml --target-platform linux-aarch64 --output-dir retronvim-channel
-# rattler-build build   --recipe retrovim.yaml --target-platform osx-64        --output-dir retronvim-channel
-# rattler-build build   --recipe retrovim.yaml --target-platform osx-arm64     --output-dir retronvim-channel
-# rattler-build build   --recipe retrovim.yaml --target-platform win-64        --output-dir retronvim-channel
+# rattler-build build   --recipe retrovim.yaml --target-platform linux-64      --output-dir retrovim-channel
+# rattler-build build   --recipe retrovim.yaml --target-platform linux-aarch64 --output-dir retrovim-channel
+# rattler-build build   --recipe retrovim.yaml --target-platform osx-64        --output-dir retrovim-channel
+# rattler-build build   --recipe retrovim.yaml --target-platform osx-arm64     --output-dir retrovim-channel
+# rattler-build build   --recipe retrovim.yaml --target-platform win-64        --output-dir retrovim-channel
 
 # https://pixi.prefix.dev/dev/reference/cli/pixi/clean/cache
 # pixi clean cache --build --yes
 
 # https://pixi.prefix.dev/dev/reference/cli/pixi/global/install
-# pixi g install --path ./retronvim-channel/linux-64/*conda      -c retronvim -c conda-forge
-# pixi g install --path ./retronvim-channel/linux-aarch64/*conda -c retronvim -c conda-forge
-# pixi g install --path ./retronvim-channel/osx-64/*conda        -c retronvim -c conda-forge
-# pixi g install --path ./retronvim-channel/osx-aarch64/*conda   -c retronvim -c conda-forge
-# pixi g install --path ./retronvim-channel/win-64/*conda        -c retronvim -c conda-forge
+# pixi g install --path ./retrovim-channel/linux-64/*conda      -c retronvim -c conda-forge
+# pixi g install --path ./retrovim-channel/linux-aarch64/*conda -c retronvim -c conda-forge
+# pixi g install --path ./retrovim-channel/osx-64/*conda        -c retronvim -c conda-forge
+# pixi g install --path ./retrovim-channel/osx-aarch64/*conda   -c retronvim -c conda-forge
+# pixi g install --path ./retrovim-channel/win-64/*conda        -c retronvim -c conda-forge
 
 # https://rattler-build.prefix.dev/latest/getting_started/#authentication
 # rattler-build auth login anaconda.org --conda-token $ANACONDA_API_KEY
@@ -26,7 +26,7 @@
 # rattler-build publish --recipe retrovim.yaml --target-platform win-64        --to https://anaconda.org/retronvim
 
 context:
-  version: 0.0.4
+  version: 0.0.5
 
 package:
   name: retrovim
@@ -42,11 +42,6 @@ source:
 
 build:
   # number: 0 # build version
-
-  dynamic_linking:
-    # fixes macos builds from linux: failed to find `install_name_tool`
-    # https://rattler-build.prefix.dev/latest/build_options/#dynamic-linking-configuration
-    binary_relocation: false
 
   script:
     interpreter: bash
@@ -77,8 +72,8 @@ build:
 
           cat   >> $PREFIX/bin/nvim <<< '#!/bin/bash'
           cat   >> $PREFIX/bin/nvim <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
-          cat   >> $PREFIX/bin/nvim <<< 'export SHELL=zsh'
           cat   >> $PREFIX/bin/nvim <<< 'export RETRONVIM_PREFIX=$CONDA_PREFIX/opt/retrovim'
+          cat   >> $PREFIX/bin/nvim <<< 'export SHELL=zsh'
           cat   >> $PREFIX/bin/nvim <<< 'export VIMINIT="luafile $CONDA_PREFIX/opt/retrovim/nvim/init.lua"'
           cat   >> $PREFIX/bin/nvim <<< 'export ZDOTDIR="$CONDA_PREFIX/opt/retrovim/zsh"'
           cat   >> $PREFIX/bin/nvim <<< 'cp --update $CONDA_PREFIX/__clobbers__/nvim/bin/nvim $CONDA_PREFIX/bin/nvim.0.12'
@@ -96,12 +91,12 @@ build:
           ############################################################################################################################
 
           cat   >> $PREFIX/bin/yazi <<< '#!/bin/bash'
-          cat   >> $PREFIX/bin/yazi <<< 'export BAT_THEME="base16"'
           cat   >> $PREFIX/bin/yazi <<< 'export CONDA_PREFIX=${CONDA_PREFIX:-$(dirname $(dirname $(realpath $0)))}'
+          cat   >> $PREFIX/bin/yazi <<< 'export BAT_THEME="base16"'
           cat   >> $PREFIX/bin/yazi <<< 'export FZF_DEFAULT_OPTS='\''--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'\'
           cat   >> $PREFIX/bin/yazi <<< 'export LESS="--ignore-case"'
-          cat   >> $PREFIX/bin/yazi <<< 'export LESSKEYIN="$CONDA_PREFIX/opt/retrovim/yazi/lesskey"'
           cat   >> $PREFIX/bin/yazi <<< 'export LESSHISTFILE="-"'
+          cat   >> $PREFIX/bin/yazi <<< 'export LESSKEYIN="$CONDA_PREFIX/opt/retrovim/yazi/lesskey"'
           cat   >> $PREFIX/bin/yazi <<< 'export YAZI_CONFIG_HOME="$CONDA_PREFIX/opt/retrovim/yazi"'
           cat   >> $PREFIX/bin/yazi <<< 'exec $CONDA_PREFIX/__clobbers__/yazi/bin/yazi "$@"'
           chmod +x $PREFIX/bin/yazi
@@ -121,6 +116,20 @@ build:
 
           ############################################################################################################################
 
+          mkdir -p $PREFIX/etc/conda/activate.d
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set "VIMINIT=luafile %CONDA_PREFIX%/opt/retrovim/nvim/init.lua"'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set BAT_THEME=base16'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set FZF_DEFAULT_OPTS=--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set LESS=--ignore-case'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set LESSHISTFILE=-'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set LESSKEYIN=%CONDA_PREFIX%/opt/retrovim/yazi/lesskey'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set RETRONVIM_PREFIX=%CONDA_PREFIX%/opt/retrovim'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set SHELL=zsh'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set YAZI_CONFIG_HOME=%CONDA_PREFIX%/opt/retrovim/yazi'
+          cat   >> $PREFIX/etc/conda/activate.d/retrovim.bat <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
+
+          ############################################################################################################################
+
           cat >> $PREFIX/bin/git.cmd <<< '@echo off'
           cat >> $PREFIX/bin/git.cmd <<< 'git.exe %*'
 
@@ -132,19 +141,18 @@ build:
 
           ############################################################################################################################
 
-          cat >> $PREFIX/Library/bin/nvim.exe <<< ''
           cat >> $PREFIX/Library/bin/nvim.cmd <<< '@echo off'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set CONDA_PREFIX=%~f0\..\..\..'
-          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set SHELL=zsh.exe'
-          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set RETRONVIM_PREFIX=%CONDA_PREFIX%/opt/retrovim'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set "VIMINIT=luafile %CONDA_PREFIX%/opt/retrovim/nvim/init.lua"'
-          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set BAT_THEME=base16'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set FZF_DEFAULT_OPTS=--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set LESS=--ignore-case'
-          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set LESSKEYIN=%CONDA_PREFIX%/opt/retrovim/yazi/lesskey'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set LESSHISTFILE=-'
+          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set LESSKEYIN=%CONDA_PREFIX%/opt/retrovim/yazi/lesskey'
+          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set RETRONVIM_PREFIX=%CONDA_PREFIX%/opt/retrovim'
+          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set SHELL=zsh.exe'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set YAZI_CONFIG_HOME=%CONDA_PREFIX%/opt/retrovim/yazi'
+          cat >> $PREFIX/Library/bin/nvim.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
           cat >> $PREFIX/Library/bin/nvim.cmd <<< 'nvim %*'
 
           ############################################################################################################################
@@ -158,16 +166,16 @@ build:
 
           cat >> $PREFIX/bin/yazi.cmd <<< '@echo off'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set CONDA_PREFIX=%~f0\..\..'
-          cat >> $PREFIX/bin/yazi.cmd <<< 'set SHELL=zsh.exe'
-          cat >> $PREFIX/bin/yazi.cmd <<< 'set RETRONVIM_PREFIX=%CONDA_PREFIX%/opt/retrovim'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set "VIMINIT=luafile %CONDA_PREFIX%/opt/retrovim/nvim/init.lua"'
-          cat >> $PREFIX/bin/yazi.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set BAT_THEME=base16'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set FZF_DEFAULT_OPTS=--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set LESS=--ignore-case'
-          cat >> $PREFIX/bin/yazi.cmd <<< 'set LESSKEYIN=%CONDA_PREFIX%/opt/retrovim/yazi/lesskey'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set LESSHISTFILE=-'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set LESSKEYIN=%CONDA_PREFIX%/opt/retrovim/yazi/lesskey'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set RETRONVIM_PREFIX=%CONDA_PREFIX%/opt/retrovim'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set SHELL=zsh.exe'
           cat >> $PREFIX/bin/yazi.cmd <<< 'set YAZI_CONFIG_HOME=%CONDA_PREFIX%/opt/retrovim/yazi'
+          cat >> $PREFIX/bin/yazi.cmd <<< 'set ZDOTDIR=%CONDA_PREFIX%/opt/retrovim/zsh'
           cat >> $PREFIX/bin/yazi.cmd <<< 'yazi.exe %*'
 
           ############################################################################################################################
@@ -228,7 +236,6 @@ requirements:
     - 7zip=26.00
     - bat=0.26.1
     - eza=0.23.4
-    - fd-find=10.4.2
     - font-fira-code-nerd-font=3.4.0
     - fzf=0.70.0
     - git

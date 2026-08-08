@@ -273,7 +273,6 @@ _    _    _              _              _    _    _
   - [`bat`](https://github.com/sharkdp/bat)
   - [`eza`](https://github.com/eza-community/eza)
   - [`firacode_nerd_font`](https://github.com/ryanoasis/nerd-fonts)
-  - [`fd`](https://github.com/sharkdp/fd)
   - [`fzf`](https://github.com/junegunn/fzf)
   - [`git`](https://github.com/git-for-windows/git)
   - [`kanata`](https://github.com/jtroo/kanata)
@@ -313,7 +312,7 @@ _    _    _              _              _    _    _
 
 - `terax` on `linux` requires `chsh --shell /bin/zsh` (sets zsh as default shell)
 
-- `terax` requires the setting `Font family: FiraCode Nerd Font` for icons support (`pixi exec --channel retronvim -- firacode-nerdfont-installer` to install firacode font)
+- `terax` requires the setting `Font family: FiraCode Nerd Font` for icons support (`pixi exec --channel retronvim --with font-fira-code-nerd-font -- firacode-nerdfont-installer` to install firacode font)
 
 </details>
 
