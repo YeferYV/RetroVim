@@ -564,6 +564,9 @@ if not vim.g.vscode then
   --- https://github.com/Hessesian/kmp-lsp/blob/main/docs/editors.md
   vim.lsp.config['kmp-lsp'] = { cmd = { 'kmp-lsp' }, filetypes = { 'kotlin', 'java', 'swift' }, }
 
+  --- https://github.com/neovim/nvim-lspconfig/issues/4467
+  vim.lsp.config['tsc'] = { cmd = { 'tsc', '--lsp', '--stdio' }, filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' } }
+
   if vim.fn.executable('biome') == 1 then vim.lsp.enable({ 'biome' }) end
   if vim.fn.executable('oxfmt') == 1 then vim.lsp.enable({ 'oxfmt' }) end
   if vim.fn.executable('ty') == 1 then vim.lsp.enable({ 'ty' }) end ---> uv env ---> required by ty
@@ -571,7 +574,7 @@ if not vim.g.vscode then
   if vim.fn.executable('vscode-json-language-server') == 1 then vim.lsp.enable({ 'jsonls' }) end
   if vim.fn.executable('yaml-language-server') == 1 then vim.lsp.enable({ 'yamlls' }) end
 
-  vim.lsp.enable({ 'bashls', 'clangd', 'copilot', 'cssls', 'dockerls', 'emmet_language_server', 'gopls', 'html', 'kmp-lsp', 'lua_ls', 'neocmake', 'omnisharp', 'phpantom_lsp', 'prismals', 'ruff', 'rust_analyzer', 'sqls', 'taplo', 'terraformls', 'ts_ls' })
+  vim.lsp.enable({ 'bashls', 'clangd', 'copilot', 'cssls', 'dockerls', 'emmet_language_server', 'gopls', 'html', 'kmp-lsp', 'lua_ls', 'neocmake', 'omnisharp', 'phpantom_lsp', 'prismals', 'ruff', 'rust_analyzer', 'sqls', 'taplo', 'terraformls', 'ts_ls', 'tsc' })
 
   map("n", "<leader>L", "", { desc = " LSP installer" }) --- relaunch nvim to autostart the new installed lsp
   map("n", "<leader>Lb", function() sendSequence('pixi g install --environment neovim-lsp bash-language-server=5.6.0') fix_node_path() end,                                                  { desc = " bash" })                      --- (no formatter press `=` to format selection)
@@ -582,7 +585,7 @@ if not vim.g.vscode then
   map("n", "<leader>Lf", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g oxfmt') end,                                                                                 { desc = " oxfmt formatter/eslint" })
   map("n", "<leader>LF", function() sendSequence('pixi g install --environment neovim-lsp biome') end,                                                                                       { desc = " biome formatter/eslint" })    --- https://biomejs.dev/internals/language-support/
   map("n", "<leader>Lg", function() sendSequence('pixi g install --environment neovim-lsp gopls=0.20.0') end,                                                                                { desc = " go" })                        --- (+formatter)
-  map("n", "<leader>Lh", function() sendSequence('pixi g install --environment neovim-lsp --channel retronvim phpantom_lsp=0.9.0') end,                                                          { desc = " php" })                       --- (+formatter)
+  map("n", "<leader>Lh", function() sendSequence('pixi g install --environment neovim-lsp --channel retronvim phpantom_lsp=0.9.0') end,                                                      { desc = " php" })                       --- (+formatter)
   map("n", "<leader>Lj", function() sendSequence('pixi g install --environment neovim-lsp --channel retronvim kmp-lsp=0.25.0') end,                                                          { desc = "   java kotlin swift" })
   map("n", "<leader>Ll", function() sendSequence('pixi g install --environment neovim-lsp lua-language-server=3.17.1') end,                                                                  { desc = " lua for  " })               --- (+formatter)
   map("n", "<leader>LL", function() sendSequence('winget install luals.lua-language-server || scoop install lua-language-server') end,                                                       { desc = " lua for " })                 --- (+formatter)
@@ -597,6 +600,7 @@ if not vim.g.vscode then
   map("n", "<leader>LT", function() sendSequence('pixi g install --environment neovim-lsp taplo=0.10.0') end,                                                                                { desc = " toml" })                      --- (+formatter)
   map("n", "<leader>Lx", function() sendSequence('pixi g install --environment neovim-lsp vscode-langservers-extracted=4.10.0') fix_node_path() end,                                         { desc = "   css html json" })         --- (+formatter)
   map("n", "<leader>LX", function() sendSequence('pixi g install --environment neovim-lsp typescript=5.9.3 typescript-language-server=5.1.3 vue-language-server=3.2.8') fix_node_path() end, { desc = "   󰡄 " })                   --- (+formatter)
+  map("n", "<leader>LY", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g typescript@7') end,                                                                          { desc = " typescript 7" })
   map("n", "<leader>Ly", function() sendSequence('pixi g install --environment neovim-lsp yaml-language-server=1.21.0') fix_node_path() end,                                                 { desc = " yaml" })                      --- (+formatter)
 
   ------------------------------------------------------------------------------------------------------------------------
