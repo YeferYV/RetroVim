@@ -147,26 +147,25 @@ terax-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builti
 
 <details open><summary></summary>
 
-|       keymap        | description                                                |
-| :-----------------: | :--------------------------------------------------------- |
-|       `<tab>`       | show (dash/path) options or complete path                  |
-|    `<tab><tab>`     | enter completion menu                                      |
-|    `<esc><esc>`     | tmux-copy-mode-like / normal-mode (inside neovim terminal) |
-|   `shift+escape`    | tmux-copy-mode-like / normal-mode (inside neovim terminal) |
-|    `nvim<enter>`    | open retronvim's neovim IDE (`<space>` to open whichkey)   |
-|     `y<enter>`      | open yazi (changes directory on exit)                      |
+| keymap              | description                                                |
+| :------------------ | :--------------------------------------------------------- |
+| `<tab>`             | show (dash/path) options or complete path                  |
+| `<tab><tab>`        | enter completion menu                                      |
+| `<esc><esc>`        | tmux-copy-mode-like / normal-mode (inside neovim terminal) |
+| `nvim<enter>`       | open retronvim's neovim IDE (`<space>` to open whichkey)   |
+| `y<enter>`          | open yazi (changes directory on exit)                      |
 | `alt+o` or `<esc>o` | open yazi (even while writing commands)                    |
 | `alt+h` or `<esc>`  | enter vim-mode                                             |
-|       `alt+l`       | complete inline/ghost suggestion and enter vim-mode        |
-|       `alt+j`       | prev shell history and enter vim-mode                      |
-|       `alt+k`       | next shell history and enter vim-mode                      |
-|        `Up`         | prev shell history                                         |
-|       `Down`        | next shell history                                         |
-|      `ctrl+r`       | search history with fzf                                    |
-|      `ctrl+l`       | clear screen                                               |
-|    `ctrl+alt+l`     | clear screen (inside neovim terminal or vscode terminal)   |
-|      `ctrl+d`       | exit signal                                                |
-|      `ctrl+c`       | cancel signal                                              |
+| `alt+l`             | complete inline/ghost suggestion                           |
+| `alt+j`             | prev shell history and enter vim-mode                      |
+| `alt+k`             | next shell history and enter vim-mode                      |
+| `Up`                | prev shell history                                         |
+| `Down`              | next shell history                                         |
+| `ctrl+r`            | search history with fzf                                    |
+| `ctrl+l`            | clear screen                                               |
+| `ctrl+alt+l`        | clear screen (inside neovim terminal or vscode terminal)   |
+| `ctrl+d`            | exit signal                                                |
+| `ctrl+c`            | cancel signal                                              |
 
 </details>
 
@@ -204,26 +203,28 @@ _    _    _              _              _    _    _
 | @alt | tap for middle click, hold for LeftAlt                                                    |         `LAlt+l = LAlt+l`          |
 | @spc | tap for space, hold for touchcursor layer, release for qwerty layer                       | `space+jj = DownArrow + DownArrow` |
 |  @;  | tap for semicolon, hold for ctrl                                                          | `;+click = OpenInNewTab (chrome)`  |
+| @bsp | backspace key                                                                             |             `space+s`              |
 | @clr | clear screen on any shell                                                                 |             `space+r`              |
-|  @¿  | unicode ¿                                                                                 |             `space+v`              |
-|  @ñ  | unicode ñ                                                                                 |             `space+b`              |
 | @m🡠  | mouse scrolling left                                                                      |             `space+t`              |
 | @m🡪  | mouse scrolling right                                                                     |             `space+g`              |
 | @m↑  | mouse scrolling up                                                                        |             `space+e`              |
 | @m↓  | mouse scrolling down                                                                      |             `space+d`              |
 | @M↑  | mouse fast scrolling up                                                                   |             `space+q`              |
 | @M↓  | mouse fast scrolling down                                                                 |             `space+a`              |
+| del  | delete key                                                                                |             `space+w`              |
 | spc  | space key                                                                                 |             `space+f`              |
-| bspc | backspace key                                                                             |             `space+s`              |
-| home | home key                                                                                  |             `space+m`              |
-| end  | end key                                                                                   |             `space+,`              |
-| pgup | pageup key                                                                                |             `space+n`              |
-| pgdn | pagedown key                                                                              |             `space+.`              |
 |  @🡠  | left arrow key                                                                            |             `space+h`              |
 |  @↓  | down arrow key                                                                            |             `space+j`              |
 |  @↑  | up arrow key                                                                              |             `space+k`              |
 |  @🡪  | right arrow key                                                                           |             `space+l`              |
+| @yaz | open yazi and cd on exit                                                                  |             `space+;`              |
 | caps | toggles capslock                                                                          |             `space+c`              |
+|  @¿  | unicode ¿                                                                                 |             `space+v`              |
+|  @ñ  | unicode ñ                                                                                 |             `space+b`              |
+| home | home key                                                                                  |             `space+m`              |
+| end  | end key                                                                                   |             `space+,`              |
+| pgup | pageup key                                                                                |             `space+n`              |
+| pgdn | pagedown key                                                                              |             `space+.`              |
 
 </details>
 
