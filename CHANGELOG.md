@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.5](https://github.com/YeferYV/RetroVim/compare/v0.0.4...v0.0.5) (2026-08-09)
+
+
+### Bug Fixes
+
+* **retrovim.yaml:** trampoline_configuration/nvim.json prefers nvim.exe instead of nvim.cmd ([84db5dd](https://github.com/YeferYV/RetroVim/commit/84db5dd1a821dd5e7863751b5afc92b9a7a4f4a4))
+* **zsh:** builtin zsh-autosuggestions clear ghost text after pressing enter ([26fde6d](https://github.com/YeferYV/RetroVim/commit/26fde6d6844bb89b25f08d20f1750b50d318f9bb))
+* **zsh:** terax shell integration changes $ZDOTDIR ([a327270](https://github.com/YeferYV/RetroVim/commit/a327270c6a7d4fc7651c2acbe28adbffbd305faf))
+
 ## [0.0.4](https://github.com/YeferYV/RetroVim/compare/v0.0.3...v0.0.4) (2026-08-07)
 
 
