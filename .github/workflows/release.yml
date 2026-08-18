@@ -20,11 +20,14 @@ env:
 
 # https://github.com/googleapis/release-please-action?tab=readme-ov-file#workflow-permissions
 # GitHub requires `issues: write` permission for label management since labels are shared between issues and pull requests
+# https://github.com/googleapis/release-please-action/issues/1070 <-> release-please failed Resource not accessible by integration
+# https://github.com/cli/cli/issues/9514                          <-> release-please failed Resource not accessible by integration
 permissions:
   contents: write
   pull-requests: write
   issues: write
   id-token: write # Required for PyPI/npm Trusted Publishing (OIDC)
+  # workflows: write
 
 jobs:
 
