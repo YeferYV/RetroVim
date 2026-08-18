@@ -26,7 +26,7 @@
 # rattler-build publish --recipe retrovim.yaml --target-platform win-64        --to https://anaconda.org/retronvim
 
 context:
-  version: 0.0.5
+  version: 0.0.6
 
 package:
   name: retrovim
@@ -244,7 +244,7 @@ requirements:
     - nvim=0.12.4
     - ripgrep=15.1.0
     - starship=1.24.2
-    - yazi=26.5.6
+    - yazi=26.8.15
     - zsh-patina=1.8.0
     - zsh=5.9
 

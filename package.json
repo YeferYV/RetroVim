@@ -4,6 +4,7 @@
   "description": "minimal neovim, yazi, zsh and kanata setup",
   "keywords": [
     "astronvim",
+    "dotfiles",
     "file-manager",
     "git-bash",
     "kanata",
