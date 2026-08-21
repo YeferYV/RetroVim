@@ -84,8 +84,8 @@ vim.opt.winborder = 'rounded'     --- MiniCompletion's info and signature border
 vim.opt.wrap = false              --- display lines as one long line
 vim.opt.list = true               --- Enables the visibility of listchars globally
 vim.opt.listchars = {
-  tab = "▏ ",
-  multispace = " ", --- Keeps non-leading consecutive spaces clean
+  tab = "▏ ",            --- https://www.youtube.com/watch?v=wyegDSxBy6E
+  multispace = " ",      --- Keeps non-leading consecutive spaces clean
   leadmultispace = "▏ ", --- Matches your indent size (1 character + spaces)
   trail = " ",
 }
@@ -187,6 +187,14 @@ if not vim.g.vscode then
   autocmd("TextYankPost", { callback = function() vim.highlight.on_yank({ higroup = "Visual", timeout = 200 }) end })
 
   autocmd({ "BufWinEnter" }, { pattern = "*.code-snippets", command = "set ft=json" })
+
+  --- python,... indentation-space size, only golang uses indentation-tabs
+  autocmd("FileType",
+    {
+      pattern = { "c", "cpp", "cs", "java", "kotlin", "php", "python", "rust", "sql", "swift" },
+      command = [[lua vim.opt_local.listchars:append({leadmultispace = "▏   "})]]
+    }
+  )
 
   --- right click menu
   vim.cmd [[ anoremenu PopUp.Quit <cmd>quit!<cr> ]]
@@ -533,7 +541,7 @@ if not vim.g.vscode then
       vim.cmd.term()
     end
     vim.fn.chansend(vim.bo.channel, { sequence .. '\r' })
-    vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig', version = '51dbf53' }})
+    vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig', version = 'bff1bd61' }})
   end
 
   local fix_node_path = function()
@@ -572,12 +580,13 @@ if not vim.g.vscode then
 
   if vim.fn.executable('biome') == 1 then vim.lsp.enable({ 'biome' }) end
   if vim.fn.executable('oxfmt') == 1 then vim.lsp.enable({ 'oxfmt' }) end
+  if vim.fn.executable('tsc') == 1 then vim.lsp.enable({ 'tsc' }) end
   if vim.fn.executable('ty') == 1 then vim.lsp.enable({ 'ty' }) end ---> uv env ---> required by ty
   if vim.fn.executable('tailwindcss-language-server') == 1 then vim.lsp.enable({ 'tailwindcss' }) end
-  if vim.fn.executable('vscode-json-language-server') == 1 then vim.lsp.enable({ 'jsonls' }) end
+  if vim.fn.executable('vscode-json-language-server') == 1 then vim.lsp.enable({ 'cssls', 'html', 'jsonls' }) end
   if vim.fn.executable('yaml-language-server') == 1 then vim.lsp.enable({ 'yamlls' }) end
 
-  vim.lsp.enable({ 'bashls', 'clangd', 'copilot', 'cssls', 'dockerls', 'emmet_language_server', 'gopls', 'html', 'kmp-lsp', 'lua_ls', 'neocmake', 'omnisharp', 'phpantom_lsp', 'prismals', 'ruff', 'rust_analyzer', 'sqls', 'sqruff', 'taplo', 'terraformls', 'tsc', 'vtsls' })
+  vim.lsp.enable({ 'bashls', 'clangd', 'copilot', 'dockerls', 'emmet_language_server', 'gopls', 'kmp-lsp', 'lua_ls', 'neocmake', 'omnisharp', 'phpantom_lsp', 'prismals', 'ruff', 'rust_analyzer', 'sqls', 'sqruff', 'taplo', 'terraformls', 'vtsls' })
 
   map("n", "<leader>L", "", { desc = " LSP installer" }) --- relaunch nvim to autostart the new installed lsp
   map("n", "<leader>La", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g typescript@7') end,                                                 { desc = "    angular react ..." }) --- (+formatter)
