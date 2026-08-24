@@ -241,10 +241,10 @@ requirements:
     - git
     - kanata=1.11.0
     - lazygit=0.61.0
-    - nvim=0.12.4
+    - nvim=0.12.5
     - ripgrep=15.1.0
     - starship=1.24.2
-    - yazi=26.8.15
+    - yazi=26.9.1
     - zsh-patina=1.8.0
     - zsh=5.9
 
