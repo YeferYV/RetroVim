@@ -3,17 +3,10 @@
 --- ╰─────────╯
 
 local vim          = vim --- lsp warnings
-local colon        = vim.env.APPDATA and ';' or ':'
 local mini_path    = vim.env.RETRONVIM_PREFIX and (vim.env.RETRONVIM_PREFIX .. '/nvim/plugins/mini.nvim') or ''
 local plugins_path = vim.fn.expand(vim.fs.normalize(vim.fn.stdpath("data")) .. '/site/pack/core/opt/*', 0, 1)
 
-vim.env.PNPM_HOME  = vim.env.PNPM_HOME or (vim.env.HOME .. '/.local/share/pnpm')
-vim.env.PATH       = vim.env.PATH .. colon .. vim.env.HOME .. '/.pixi/bin'
-vim.env.PATH       = vim.env.PATH .. colon .. vim.env.PNPM_HOME
-vim.env.PATH       = vim.env.PATH .. colon .. vim.env.PNPM_HOME .. '/bin'
-vim.env.PATH       = vim.env.PATH .. colon .. vim.env.PNPM_HOME .. '/global/5/node_modules/.bin'
-
-if not vim.loop.fs_stat(mini_path) then
+if not vim.loop.fs_stat(mini_path .. '.git') then
   vim.pack.add({ { src = 'https://github.com/nvim-mini/mini.nvim', version = 'v0.18.0' } })
 end
 
@@ -35,7 +28,7 @@ if not vim.g.vscode then
   map({ 'i' }, '<a-]>', function() vim.lsp.inline_completion.select({ count = 1 }) end, { desc = ' next suggestion' })
   map({ 'i', 'n', 'x' }, '<a-;>', function() require("sidekick").nes_jump_or_apply() end, { desc = ' nes apply' }) --- <m-;> doesn't work with pum
   map({ 'i', 'n', 'x' }, '<a-,>', function() require("sidekick.nes").update() end, { desc = ' nes update' })
-  map({ 'i', 'n', 'x' }, "<a-'>", function() require("sidekick.nes").clear() end, { desc = ' nes clear' })
+  map({ 'i', 'n', 'x' }, "<a-.>", function() require("sidekick.nes").clear() end, { desc = ' nes clear' })
   map({ 'i', 'n', 'x' }, '<leader>lg', "<cmd>Sidekick cli toggle name=opencode<cr>", { desc = '󰵰 opencode cli' })
   map({ 'i', 'n', 'x' }, '<leader>lG', "<cmd>Sidekick cli prompt<cr>", { desc = '󰵰 opencode prompt' })
 
@@ -45,6 +38,10 @@ end
 ------------------------------------------------------------------------------------------------------------------------
 
 pcall(function() require("flash").setup({ modes = { search = { enabled = true } } }) end)
+
+------------------------------------------------------------------------------------------------------------------------
+
+pcall(function() require("mini-pick-preview").setup() end)
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -444,7 +441,7 @@ if not vim.g.vscode then
   require('mini.misc').setup_auto_root()
   require('mini.misc').setup_restore_cursor()
   require('mini.notify').setup({ window = { winblend = 0 } --[[ ,lsp_progress = { enable = false } ]] })
-  require('mini.pick').setup()
+  require("mini.pick").setup({ window = { config = { height = vim.o.lines, width = math.floor(vim.o.columns / 2) } } })
   require('mini.pairs').setup()
   require('mini.snippets').start_lsp_server()
   require('mini.statusline').setup()
@@ -536,10 +533,8 @@ if not vim.g.vscode then
   })
 
   --> https://www.youtube.com/watch?v=ooTcnx066Do
-  local sendSequence = function(sequence, continue_sequence)
-    if not continue_sequence then
-      vim.cmd.term()
-    end
+  local sendSequence = function(sequence)
+    vim.cmd.term()
     vim.fn.chansend(vim.bo.channel, { sequence .. '\r' })
     vim.pack.add({{ src = 'https://github.com/neovim/nvim-lspconfig', version = 'bff1bd61' }})
   end
@@ -589,13 +584,13 @@ if not vim.g.vscode then
   vim.lsp.enable({ 'bashls', 'clangd', 'copilot', 'dockerls', 'emmet_language_server', 'gopls', 'kmp-lsp', 'lua_ls', 'neocmake', 'omnisharp', 'phpantom_lsp', 'prismals', 'ruff', 'rust_analyzer', 'sqls', 'sqruff', 'taplo', 'terraformls', 'vtsls' })
 
   map("n", "<leader>L", "", { desc = " LSP installer" }) --- relaunch nvim to autostart the new installed lsp
-  map("n", "<leader>La", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g typescript@7') end,                                                 { desc = "    angular react ..." }) --- (+formatter)
+  map("n", "<leader>La", function() sendSequence('pixi g install typescript=7.0.2 -c retronvim') end,                                                               { desc = "    angular react ..." }) --- (+formatter) it can't replace neovim-lsp env with retronvim channel but it can add channel
   map("n", "<leader>Lb", function() sendSequence('pixi g install --environment neovim-lsp bash-language-server=5.6.0') fix_node_path() end,                         { desc = " bash" })                    --- (no formatter press `=` to format selection)
   map("n", "<leader>Lc", function() sendSequence('pixi g install --environment neovim-lsp clang-tools=22.1.0 --expose clangd') end,                                 { desc = " c/c++" })                   --- (+formatter)
   map("n", "<leader>LC", function() sendSequence('pixi g install --environment neovim-lsp omnisharp-roslyn=1.39.12') end,                                           { desc = " c#" })                      --- (+formatter)
   map("n", "<leader>Ld", function() sendSequence('pixi g install --environment neovim-lsp dockerfile-language-server-nodejs=0.15.0 ') fix_node_path() end,          { desc = " docker" })                  --- (+formatter)
   map("n", "<leader>Le", function() sendSequence('pixi g install --environment neovim-lsp emmet-language-server=2.8.0 ') fix_node_path() end,                       { desc = " emmet (autoclose tag)" })   --- suggests <autoclose-this-tag> but not </close-some-open-tag> like vscode-html-language-server
-  map("n", "<leader>Lf", function() sendSequence('pixi g install pnpm nodejs && pnpm install -g oxfmt') end,                                                        { desc = " oxfmt formatter/eslint" })  --- https://oxc.rs/docs/guide/usage/formatter/language-support
+  map("n", "<leader>Lf", function() sendSequence('pixi g install oxfmt=0.67.0 -c retronvim') end,                                                                   { desc = " oxfmt formatter/eslint" })  --- https://oxc.rs/docs/guide/usage/formatter/language-support
   map("n", "<leader>LF", function() sendSequence('pixi g install --environment neovim-lsp biome') end,                                                              { desc = " biome formatter/eslint" })  --- https://biomejs.dev/internals/language-support
   map("n", "<leader>Lg", function() sendSequence('pixi g install --environment neovim-lsp gopls=0.20.0') end,                                                       { desc = " go" })                      --- (+formatter)
   map("n", "<leader>Lh", function() sendSequence('pixi g install --environment neovim-lsp --channel retronvim phpantom_lsp=0.9.0') end,                             { desc = " php" })                     --- (+formatter)
@@ -608,7 +603,7 @@ if not vim.g.vscode then
   map("n", "<leader>LP", function() sendSequence('pixi g install --environment neovim-lsp ty=0.0.43 ruff=0.15.16') end,                                             { desc = " python" })                  --- (+formatter)
   map("n", "<leader>Lr", function() sendSequence('pixi g install --environment neovim-lsp rust=1.97.1 rust-analyzer=2026.04.27') end,                               { desc = " rust" })                    --- (+formatter)
   map("n", "<leader>LR", function() sendSequence('pixi g install --environment neovim-lsp terraform-ls=0.38.5') fix_node_path() end,                                { desc = " terraform" })               --- (no formatter press `=` to format selection)
-  map("n", "<leader>Ls", function() sendSequence('pixi g install sqls=0.2.45 sqruff=0.40.0 -c https://prefix.dev/github-releases -c conda-forge -c retronvim') end, { desc = " sql" })                     --- (+formatter)
+  map("n", "<leader>Ls", function() sendSequence('pixi g install sqls=0.2.45 sqruff=0.40.0 -c https://prefix.dev/github-releases -c conda-forge -c retronvim') end, { desc = " sql" })                     --- (+formatter)  it can't replace neovim-lsp env with retronvim channel but it can add channel
   map("n", "<leader>Lt", function() sendSequence('pixi g install --environment neovim-lsp tailwindcss-language-server=0.14.29') fix_node_path() end,                { desc = "󱏿 tailwindcss" })
   map("n", "<leader>LT", function() sendSequence('pixi g install --environment neovim-lsp taplo=0.10.0') end,                                                       { desc = " toml" })                    --- (+formatter)
   map("n", "<leader>Lv", function() sendSequence('pixi g install --environment neovim-lsp vue-language-server=3.2.8 vtsls=0.3.00 ') fix_node_path() end,            { desc = "󰡄 vue" })                     --- (+formatter)
@@ -654,7 +649,7 @@ if not vim.g.vscode then
     "n",
     "<leader>Ek",
     function()
-      sendSequence("pixi g install opencode copilot-language-server-release -c https://prefix.dev/retronvim -c conda-forge; exit")
+      sendSequence("pixi g install opencode copilot-language-server-release -c https://prefix.dev/retronvim -c https://prefix.dev/github-releases; exit")
       vim.pack.add({{ src = 'https://github.com/folke/sidekick.nvim', version = 'v2.3.0' }})
       autocmd({ "TermLeave" }, { once = true, command = "lsp enable copilot" })
       require("sidekick").setup({})
@@ -663,11 +658,12 @@ if not vim.g.vscode then
   )
   map(
     "n",
-    "<leader>En",
+    "<leader>Em",
     function()
-      vim.pack.add({{ src = 'https://github.com/rodolfo-arg/neotype', commit = "b7e2bff"}})
+      vim.pack.add({{ src = 'https://github.com/sh1Nome/mini-pick-preview.nvim', commit = "490e208"}})
+      vim.cmd.restart()
     end,
-    { desc = " neotype 󰌌 " }
+    { desc = " mini-pick-preview  " }
   )
   map(
     "n",
@@ -680,7 +676,7 @@ if not vim.g.vscode then
   )
   map("n", "<leader>EF", function() vim.pack.del({"flash.nvim"}) vim.cmd.restart() end, { desc = " flash.nvim 󰉁 " })
   map("n", "<leader>EK", function() vim.pack.del({"sidekick.nvim"}) vim.cmd.restart() end, { desc = " sidekick 󰫣  " })
-  map("n", "<leader>EN", function() vim.pack.del({"neotype"}) vim.cmd.restart() end, { desc = " neotype 󰌌 " })
+  map("n", "<leader>EM", function() vim.pack.del({"mini-pick-preview.nvim"}) vim.cmd.restart() end, { desc = " mini-pick-preview  " })
   map("n", "<leader>ES", function() vim.pack.del({"supermaven-nvim"}) vim.cmd.restart() end, { desc = " supermaven  " })
   map("n", "<leader>E?", function() vim.print(vim.pack.get()) end, { desc = "󱃔 installed extensions" })
   map("n", "<leader>E!", function() vim.cmd.checkhealth() end, { desc = " checkhealth extensions" })
@@ -732,6 +728,7 @@ if not vim.g.vscode then
   map("n", "<leader>ul", "<cmd>set cursorline!<cr>", { desc = "󰔢 cursorline" })
   map("n", "<leader>up", "<cmd>popup PopUp<cr>", { desc = "󰔢 mouse-popup" })
   map("n", "<leader>us", function() vim.o.laststatus = vim.o.laststatus == 0  and 3 or 0 end, { desc = "󰔡 statusline" })
+  map("n", "<leader>uw", "<cmd>set wrap!<cr>", { desc = "󰔢 wrap" })
   map("n", "<leader>t", "<cmd>term<cr>", { desc = " term tab" })
   map("n", "<leader>v", "<cmd>vsplit | terminal<cr>", { desc = " term horizontal" })
   map("n", "<leader>V", "<cmd>split  | terminal<cr>", { desc = " term vertical" })
@@ -773,9 +770,9 @@ if not vim.g.vscode then
     function()
       local curr_file = vim.fs.normalize(vim.fn.expand('%:p'))
       vim.cmd.terminal(
-        'echo ' .. curr_file .. '              > $HOME/.yazi;' ..
-        'yazi ' .. curr_file .. ' --chooser-file $HOME/.yazi;' ..
-        'nvim --server $NVIM --remote     "$(cat $HOME/.yazi)";'
+        'echo "' .. curr_file .. '"              > $HOME/.yazi;' ..
+        'yazi "' .. curr_file .. '" --chooser-file $HOME/.yazi;' ..
+        'nvim --server $NVIM --remote       "$(cat $HOME/.yazi)";'
         -- .. 'nvim --server $NVIM --remote-send "<cmd>bdelete! \\#<cr>"'
       )
       vim.cmd.file("yazi")

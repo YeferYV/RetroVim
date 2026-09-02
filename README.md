@@ -280,7 +280,7 @@ _    _    _              _              _    _    _
 - RetroVim.conda is shipped with
   - [`bat`](https://github.com/sharkdp/bat)
   - [`eza`](https://github.com/eza-community/eza)
-  - [`firacode_nerd_font`](https://github.com/ryanoasis/nerd-fonts)
+  - [`font-fira-code-nerd-font`](https://github.com/ryanoasis/nerd-fonts)
   - [`fzf`](https://github.com/junegunn/fzf)
   - [`git`](https://github.com/git-for-windows/git)
   - [`kanata`](https://github.com/jtroo/kanata)
@@ -298,9 +298,9 @@ _    _    _              _              _    _    _
 
 - RetroVim/nvim comes with an installer for
   - [`mini.nvim`](https://github.com/echasnovski/mini.nvim) (shipped as git-submodule)
+  - [`mini-pick-preview`](https://github.com/sh1Nome/mini-pick-preview.nvim)
   - [`copilot`](https://github.com/github/copilot-language-server-release) (shipped with sidekick.nvim)
   - [`flash.nvim`](https://github.com/folke/flash.nvim)
-  - [`neotype`](https://github.com/rodolfo-arg/neotype)
   - [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig)
   - [`sidekick.nvim`](https://github.com/folke/sidekick.nvim) (free copilot nes + agents integration like gemini-cli)
   - [`supermaven`](https://github.com/supermaven-inc/supermaven-nvim) (free copilot)
@@ -329,10 +329,10 @@ _    _    _              _              _    _    _
 <details open><summary></summary>
 
 - [yeferyv/RetroNvim](https://github.com/yeferyv/retronvim)
-  vscode extension with minimal whichkey, lazyvim, terax, yazi, zsh and kanata setup
+  yazi-like file explorer + whichkey + terminal keymaps
 
 - [yeferyv/dotfiles](https://github.com/yeferyv/dotfiles)
-  retronvim + [hyprland](https://hypr.land) setup
+  retrovim + [hyprland](https://hypr.land) setup
 
 - [binvim](https://github.com/bgunnarsson/binvim/)
   neovim IDE written in rust (with copilot, agents, text-objects, whichkey ...)

@@ -31,7 +31,6 @@ export LESSHISTFILE="-"                     # bat no history
 export MANROFFOPT="-c"                      # man pages colored
 export NPM_CONFIG_PREFIX="$HOME/.local/share/npm"
 export PAGER="less -R --use-color --color=d+g --color=u+r --color=Pyk --color=Syk"
-export PNPM_HOME="$HOME/.local/share/pnpm" # $(pnpm setup)
 export SAVEHIST=10000
 export SHELL="zsh" # for nvim terminal if bash is the default shell
 export STARSHIP_CONFIG="$ZDOTDIR/starship.toml"
@@ -42,19 +41,14 @@ export ZEROBREW_ROOT="$HOME/.local/share/zerobrew"
 export ZEROBREW_PREFIX="$HOME/.local/share/zerobrew/prefix"
 export PKG_CONFIG_PATH="$ZEROBREW_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 
-export PATH="/bin:/usr/bin:$PATH"                              # for ~/.pixi/envs/retronvim/bin/zsh.exe
+export PATH="/bin:/usr/bin:$PATH"                              # for ~/.pixi/envs/retrovim/bin/zsh.exe
+export PATH="$HOME/.bun/bin:$PATH"                             # bun binaries
 export PATH="$HOME/.local/bin:$PATH"                           # uv binaries
 export PATH="$HOME/.local/share/npm/bin:$PATH"                 # npm binaries
-export PATH="$HOME/.pixi/envs/retronvim/bin:$PATH"             # for ~/.pixi/envs/retronvim/bin/zsh
-export PATH="$HOME/.pixi/envs/retronvim/Library/bin:$PATH"     # for ~/.pixi/envs/retronvim/bin/zsh
-export PATH="$HOME/.pixi/envs/retronvim/Library/usr/bin:$PATH" # for ~/.pixi/envs/retronvim/bin/zsh
 export PATH="$HOME/.pixi/envs/retrovim/bin:$PATH"              # for ~/.pixi/envs/retrovim/bin/zsh
 export PATH="$HOME/.pixi/envs/retrovim/Library/bin:$PATH"      # for ~/.pixi/envs/retrovim/bin/zsh
 export PATH="$HOME/.pixi/envs/retrovim/Library/usr/bin:$PATH"  # for ~/.pixi/envs/retrovim/bin/zsh
 export PATH="$HOME/.pixi/bin:$PATH"
-export PATH="$PATH:$PNPM_HOME"                            # $(pnpm setup)
-export PATH="$PATH:$PNPM_HOME/bin"                        # $(pnpm setup)
-export PATH="$PATH:$PNPM_HOME/global/5/node_modules/.bin" # $(pnpm approve-builds -g)
 export PATH="$PATH:$ZEROBREW_PREFIX/bin"
 
 [[ -e /data/data/com.termux ]] && export LD_LIBRARY_PATH="$(echo ~/.pixi/envs/*/lib | tr ' ' ':'):$LD_LIBRARY_PATH" # fixes lib**.so not found inside termux/proot-distro
@@ -147,8 +141,7 @@ add-zle-hook-widget line-finish     _autosuggest_clear
 # │ plugins │
 # ╰─────────╯
 
->/dev/null 2>&1 which hyprctl    && hyprctl --quiet keyword input:repeat_delay 300
->/dev/null 2>&1 which hyprctl    && hyprctl --quiet keyword input:repeat_rate 50
+>/dev/null 2>&1 which hyprctl    && hyprctl --quiet eval 'hl.config({ input = { repeat_delay = 300, repeat_rate = 50 } })'
 >/dev/null 2>&1 which fzf        && source <(fzf --zsh)
 >/dev/null 2>&1 which eza        && alias ls="eza --all --icons --group-directories-first"
 >/dev/null 2>&1 which starship   && eval "$(starship init zsh)"
