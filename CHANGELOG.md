@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.6](https://github.com/YeferYV/RetroVim/compare/v0.0.5...v0.0.6) (2026-09-11)
+
+
+### Bug Fixes
+
+* **nvim:** `whichkey` &gt; `extensions` &gt; `mini-pick-preview.nvim` ([dac7bed](https://github.com/YeferYV/RetroVim/commit/dac7bed589342f4818b5bab576dac52bd95e2407))
+* **nvim:** python, php, ... indentation size ([fd3becc](https://github.com/YeferYV/RetroVim/commit/fd3becc3d569f17197cd50a43c1504211fcaa9d6))
+* **release.yaml:** rattler-build-action skip `recipe-path: conda.recipe/recipe.yaml` ([37ec5ba](https://github.com/YeferYV/RetroVim/commit/37ec5ba9af7a7282c6a1202f1d6885f6438cfe7c))
+
 ## [0.0.5](https://github.com/YeferYV/RetroVim/compare/v0.0.4...v0.0.5) (2026-08-18)
 
 
