@@ -178,60 +178,62 @@ terax-terminal preconfigured with neovim IDE + yazi builtin plugins + zsh builti
 **layer qwerty**
 
 ```
-@grl 1    2    3    4    5    6    7    8    9    0    -    =    @bsp
-tab  q    w    @e   r    t    y    u    i    o    p    [    ]    ret
-@cap a    @s   @d   f    g    @h   @j   @k   @l   @;   '    \
-lsft ret  z    x    c    v    b    n    m    ,    .    /    rsft
-lctl lmet @alt           @spc           @sft rmet rctl
+`       1        2        3        4        5        6        7        8        9        0        -        =       ✖️
+🔄️      q        w        e        r        t        y        u        i        o        p        [        ]       ↩️
+🇪      a        s        d        f        g        h        j        k        l        🇸       '        \
+⏏️      ↩️       z        x        c        v        b        n        m        ,        .        /        ⏏️
+🇨      🪟       🇦                         🛸                         🅰️       🪟       🇨
 ```
 
 **layer touchcursor** (press and hold space to enter the layer)
 
 ```
-_    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
-_    @W↑  del  @w↑  @clr @w🡠  @m🡠  @m↓  @m↑  @m🡪  _    _    _    _
-_    @W↓  @bsp @w↓  spc  @w🡪  @🡠   @↓   @↑   @🡪   @yaz _    _
-_    caps @¿   @ñ   mmid mlft mrgt pgup home end  pgdn _    _
-_    _    _              _              _    _    _
+_       f1       f2       f3       f4       f5       f6       f7       f8       f9       f10      f11      f12     _
+_       🖱️⏫️     ¿        🖱️🔼️     🧹       🖱️◀️     🖱️⬅️     🖱️⬇️     🖱️⬆️     🖱️➡️     ñ        _        _       _
+_       🖱️⏬️     ✖️       🖱️🔽️     🛸       🖱️▶️     ⬅️       ⬇️       ⬆️       ➡️       📁️       🔒       _
+_       ⏏️↩️     🖱️👈     🗑️       🖱️👆     🔛️       🖱️👉     ⏪️       ⏬️       ⏫️       ⏩️       _        _
+_       _        _                          _                          _        _        _
 ```
 
-| key  | description                                                                               |          example / keymap          |
-| :--: | :---------------------------------------------------------------------------------------- | :--------------------------------: |
-| @grl | tap: backtick/grave, hold and press `1` = qwerty layer, hold and press `2` = dvorak layer |         `` `+2 = dvorak ``         |
-| @cap | tap for escape, hold for LeftCtrl                                                         |          `cap+l = ctrl+l`          |
-| @sft | tap for backspace, hold for LeftShift                                                     |         `RAlt+l = shift+l`         |
-| @alt | tap for middle click, hold for LeftAlt                                                    |         `LAlt+l = LAlt+l`          |
-| @spc | tap for space, hold for touchcursor layer, release for qwerty layer                       | `space+jj = DownArrow + DownArrow` |
-|  @;  | tap for semicolon, hold for ctrl                                                          | `;+click = OpenInNewTab (chrome)`  |
-| @bsp | backspace key                                                                             |             `space+s`              |
-| @clr | clear screen on any shell                                                                 |             `space+r`              |
-| @w🡠  | mouse scrolling left                                                                      |             `space+t`              |
-| @w🡪  | mouse scrolling right                                                                     |             `space+g`              |
-| @w↑  | mouse scrolling up                                                                        |             `space+e`              |
-| @w↓  | mouse scrolling down                                                                      |             `space+d`              |
-| @W↑  | mouse fast scrolling up                                                                   |             `space+q`              |
-| @W↓  | mouse fast scrolling down                                                                 |             `space+a`              |
-| @m🡠  | mouse cursor left                                                                         |             `space+y`              |
-| @m↓  | mouse cursor down                                                                         |             `space+u`              |
-| @m↑  | mouse cursor up                                                                           |             `space+i`              |
-| @m🡪  | mouse cursor right                                                                        |             `space+p`              |
-| mmid | mouse middle click                                                                        |             `space+c`              |
-| mlft | mouse left click                                                                          |             `space+v`              |
-| mrgt | mouse right click                                                                         |             `space+b`              |
-| del  | delete key                                                                                |             `space+w`              |
-| spc  | space key                                                                                 |             `space+f`              |
-|  @🡠  | left arrow key                                                                            |             `space+h`              |
-|  @↓  | down arrow key                                                                            |             `space+j`              |
-|  @↑  | up arrow key                                                                              |             `space+k`              |
-|  @🡪  | right arrow key                                                                           |             `space+l`              |
-| @yaz | open yazi and cd on exit                                                                  |             `space+;`              |
-| caps | toggles capslock                                                                          |             `space+c`              |
-|  @¿  | unicode ¿                                                                                 |             `space+v`              |
-|  @ñ  | unicode ñ                                                                                 |             `space+b`              |
-| home | home key                                                                                  |             `space+m`              |
-| end  | end key                                                                                   |             `space+,`              |
-| pgup | pageup key                                                                                |             `space+n`              |
-| pgdn | pagedown key                                                                              |             `space+.`              |
+| key  | description                                   |          example / keymap          |
+| :--: | :-------------------------------------------- | :--------------------------------: |
+|  🇨   | `ctrl` key                                    |             `🇨 = ctrl`             |
+|  🇪   | tap for `escape`, hold for `ctrl`             |             `🇪 = ctrl`             |
+|  🇸   | tap for `semicolon`, hold for `ctrl`          |             `🇸 = ctrl`             |
+|  🇦   | tap for `middle click`, hold for `alt`        |             `🇦 = alt`              |
+|  🅰️  | tap for `backspace`, hold for `shift`         |            `🅰️ = shift`            |
+|  🛸  | tap for `space`, hold for `touchcursor layer` | `space+jj = DownArrow + DownArrow` |
+| 🖱️⏫️ | mouse fast scrolling up                       |             `space+q`              |
+| 🖱️⏬️ | mouse fast scrolling down                     |             `space+a`              |
+| 🖱️🔼️ | mouse scrolling up                            |             `space+e`              |
+| 🖱️🔽️ | mouse scrolling down                          |             `space+d`              |
+| 🖱️◀️ | mouse scrolling left                          |             `space+t`              |
+| 🖱️▶️ | mouse scrolling right                         |             `space+g`              |
+| 🖱️👈 | mouse left click                              |             `space+z`              |
+| 🖱️👆 | mouse middle click                            |             `space+c`              |
+| 🖱️👉 | mouse right click                             |             `space+b`              |
+| 🖱️⬅️ | mouse cursor left                             |             `space+y`              |
+| 🖱️⬇️ | mouse cursor down                             |             `space+u`              |
+| 🖱️⬆️ | mouse cursor up                               |             `space+i`              |
+| 🖱️➡️ | mouse cursor right                            |             `space+o`              |
+|  ⬅️  | `left arrow` key                              |             `space+h`              |
+|  ⬇️  | `down arrow` key                              |             `space+j`              |
+|  ⬆️  | `up arrow` key                                |             `space+k`              |
+|  ➡️  | `right arrow` key                             |             `space+l`              |
+|  ⏪️  | `home` key                                    |             `space+n`              |
+|  ⏬️  | `pagedown` key                                |             `space+m`              |
+|  ⏫️  | `pageup` key                                  |             `space+,`              |
+|  ⏩️  | `end` key                                     |             `space+.`              |
+|  ¿   | `¿` key                                       |             `space+w`              |
+|  ñ   | `ñ` key                                       |             `space+p`              |
+|  🛸  | `space` key                                   |             `space+f`              |
+|  ✖️  | `backspace` key                               |             `space+s`              |
+|  🗑️  | `delete` key                                  |             `space+x`              |
+|  🔒  | `capslock` key                                |             `space+'`              |
+| ⏏️↩️ | `shift + enter`                               |             `space+<`              |
+|  🔛️  | `select line` like vim visual mode            |             `space+v`              |
+|  🧹  | terminal clear screen                         |             `space+r`              |
+|  📁️  | terminal open yazi                            |             `space+;`              |
 
 </details>
 

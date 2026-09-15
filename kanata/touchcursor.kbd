@@ -40,22 +40,22 @@
 ;;
 ;; There are currently a maximum of 25 layers allowed.
 (deflayer qwerty
-  @grl 1    2    3    4    5    6    7    8    9    0    -    =    @bsp
-  tab  q    w    @e   r    t    y    u    i    o    p    [    ]    ret
-  @cap a    @s   @d   f    g    @h   @j   @k   @l   @;   '    \
-  lsft ret  z    x    c    v    b    n    m    ,    .    /    rsft
-  lctl lmet @alt           @spc           @sft rmet rctl
+  @🇬     1        2        3        4        5        6        7        8        9        0        -        =       @✖️
+  @🔄️     q        w        @e       r        t        y        u        i        o        p        [        ]       @↩️
+  @🇪     a        @s       @d       f        g        @h       @j       @k       @l       @🇸       '        \
+  @⏏️     @↩️      z        x        c        v        b        n        m        ,        .        /        @⏏️
+  @🇨     @🪟      @🇦                        @🛸🛸                      @🅰️      @🪟      @🇨
 )
 
 ;; The dvorak layer remaps the keys to the dvorak layout. In addition there is
 ;; another tap-hold key: @cap. This key retains caps lock functionality when
 ;; quickly tapped but is read as left-control when held.
 (deflayer dvorak
-  @grl 1    2    3    4    5    6    7    8    9    0    [    ]    bspc
-  tab  '    ,    .    p    y    f    g    c    r    l    /    =    ret
-  @cap a    o    e    u    i    d    h    t    n    s    -    \
-  lsft ret  ;    q    j    k    x    b    m    w    v    z    rsft
-  lctl lmet lalt           spc            ralt rmet rctl
+  @🇬     1        2        3        4        5        6        7        8        9        0        [        ]       bspc
+  tab     '        ,        .        p        y        f        g        c        r        l        /        =       ret
+  caps    a        o        e        u        i        d        h        t        n        s        -        \
+  lsft    ret      ;        q        j        k        x        b        m        w        v        z        rsft
+  lctl    lmet     lalt                       spc                        ralt     rmet     rctl
 )
 
 ;; (deflayermap (altspace)
@@ -63,11 +63,11 @@
 ;; )
 
 (deflayer touchcursor
-  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
-  _    @W↑  del  @w↑  @clr @w🡠  @m🡠  @m↓  @m↑  @m🡪   _    _    _    _
-  _    @W↓  @bsp @w↓  spc  @w🡪  @🡠   @↓   @↑   @🡪   @yaz _    _
-  _    caps @¿   @ñ   mmid mlft mrgt pgup home end  pgdn _    _
-  _    _    _              _              _    _    _
+  @🇬     f1       f2       f3       f4       f5       f6       f7       f8       f9       f10      f11      f12     _
+  _       @🖱️⏫️    @¿       @🖱️🔼️    @🧹      @🖱️◀️    @🖱️⬅️    @🖱️⬇️    @🖱️⬆️    @🖱️➡️    @ñ       _        _       _
+  _       @🖱️⏬️    @✖️      @🖱️🔽️    @🛸      @🖱️▶️    @⬅️      @⬇️      @⬆️      @➡️      @📁️      @🔒      _
+  _       @⏏️↩️    @🖱️👈    @🗑️      @🖱️👆    @🔛️      @🖱️👉    @⏪️      @⏬️      @⏫️      @⏩️      _        _
+  _       _        _                          _                          _        _        _
 )
 
 ;; defalias is used to declare a shortcut for a more complicated action to keep
@@ -76,33 +76,50 @@
 ;;
 ;; Aliases are referred to by `@<alias_name>`.
 (defalias
-  ;; tap: backtick (grave), hold: toggle layer-switching layer while held
-  grl (tap-hold 200 200 grv (layer-toggle layers))
-
   ;; layer-switch changes the base layer.
   dvk (layer-switch dvorak)
   qwr (layer-switch qwerty)
 
+  ;; tap: backtick (grave), hold: toggle layer-switching layer while held
+  🇬 (tap-hold 200 200 grv (layer-toggle layers))
+
+  ;; tab
+  🔄️ tab
+
+  ;; return
+  ↩️ ret
+
   ;; tap for esc, hold for lctl
-  cap (tap-hold 200 200 esc lctl)
-
-  ;; tap for backspace, hold for lshift
-  sft (tap-hold 200 200 bspc rsft)
-
-  ;; tap for middle click, hold for lalt
-  alt (tap-hold 200 200 mmid lalt)
+  🇪 (tap-hold 200 200 esc lctl)
 
   ;; tap for semicolon, hold for ctrl
-  ; (tap-hold 200 200 ; lctl)
+  🇸 (tap-hold 200 200 ; lctl)
 
-  ;; tap for middle click, hold for altspace layout
-  ;; alt (tap-hold 200 200 mmid (multi lalt (layer-while-held altspace)))
+  ;; shift key
+  ⏏️ lsft
+
+  ;; control key
+  🇨 lctl
+
+  ;; windows key
+  🪟 lmet
+
+  ;; tap for middle click, hold for left alt
+  🇦 (tap-hold 200 200 mmid lalt)
 
   ;; tap for space, hold for oneshot in touchcursor layout
-  spc (tap-hold 200 200 spc (one-shot 500 (layer-while-held touchcursor)))
+  🛸🛸 (tap-hold 200 200 spc (one-shot 500 (layer-while-held touchcursor)))
+
+  ;; space key repeatable
+  🛸 spc
+
+  ;; tap for backspace, hold for right shift
+  🅰️ (tap-hold 200 200 bspc rsft)
+
+  ;; tap for lalt, hold for altspace layout
+  ;; 🇦 (tap-hold 200 200 lalt (multi lalt (layer-while-held altspace)))
 
   ;; fast keyboard repeat rate emulation
-  ;; (multi f24) fixes fast typing `vh`, `vj`, `vk` and `vl` not entering visual mode on neovim
   e   (tap-hold 200 200 e     (macro-repeat e     20))
   d   (tap-hold 200 200 d     (macro-repeat d     20))
   s   (tap-hold 200 200 s     (macro-repeat s     20))
@@ -110,39 +127,58 @@
   j   (tap-hold 200 200 j     (macro-repeat j     20))
   k   (tap-hold 200 200 k     (macro-repeat k     20))
   l   (tap-hold 200 200 l     (macro-repeat l     20))
-  🡠   (tap-hold 200 200 left  (macro-repeat left  20))
-  ↓   (tap-hold 200 200 down  (macro-repeat down  20))
-  ↑   (tap-hold 200 200 up    (macro-repeat up    20))
-  🡪   (tap-hold 200 200 right (macro-repeat right 20))
-  bsp (tap-hold 200 200 bspc  (macro-repeat bspc  20))
-
-  ;; open yazi_cd on any shell
-  yaz (macro S-` / . p i x i / b i n / y a z i spc S-4 S-(p w d) spc - - c w d - f i l e spc S-4 S-(h o m e) / . y a z i ; spc c d spc S-' S-4 S-9 c a t spc S-4 S-( h o m e) / . y a z i S-0 S-' ret)
-
-  ;; clear screen on any shell
-  clr (macro c l e a r ret)
-
-  ;; unicode outputs
-  ¿   (unicode ¿)
-
-  ;; unicode outputs
-  ñ   (unicode ñ)
+  ✖️  (tap-hold 200 200 bspc  (macro-repeat bspc  20))
+  ⬅️  (tap-hold 200 200 left  (macro-repeat left  20))
+  ⬇️  (tap-hold 200 200 down  (macro-repeat down  20))
+  ⬆️  (tap-hold 200 200 up    (macro-repeat up    20))
+  ➡️  (tap-hold 200 200 right (macro-repeat right 20))
 
   ;; mouse scrolling <intervale> <distance>
-  w↑ (mwheel-up 50 40)
-  w↓ (mwheel-down 50 40)
-  w🡠 (mwheel-left 50 40)
-  w🡪 (mwheel-right 50 40)
+  🖱️⏫️ (mwheel-up 25 60)
+  🖱️⏬️ (mwheel-down 25 60)
+  🖱️🔼️ (mwheel-up 50 40)
+  🖱️🔽️ (mwheel-down 50 40)
+  🖱️◀️ (mwheel-left 50 40)
+  🖱️▶️ (mwheel-right 50 40)
 
-  ;; mouse scrolling <intervale> <distance>
-  W↑ (mwheel-up 25 60)
-  W↓ (mwheel-down 25 60)
+  ;; mouse clicks
+  🖱️👈 mlft
+  🖱️👆 mmid
+  🖱️👉 mrgt
 
   ;; mouse acceleration <intervale> <time-distance> <min-distance> <max-distance>
-  m↑ (movemouse-accel-up 10 1000 1 5)
-  m↓ (movemouse-accel-down 10 1000 1 5)
-  m🡠 (movemouse-accel-left 10 1000 1 5)
-  m🡪 (movemouse-accel-right 10 1000 1 5)
+  🖱️⬅️ (movemouse-accel-left 10 1000 1 5)
+  🖱️⬇️ (movemouse-accel-down 10 1000 1 5)
+  🖱️⬆️ (movemouse-accel-up 10 1000 1 5)
+  🖱️➡️ (movemouse-accel-right 10 1000 1 5)
+  
+  ;; large jumps
+  ⏪️ home
+  ⏬️ pgdn
+  ⏫️ pgup
+  ⏩️ end
+
+  ;; delete key
+  🗑️ del
+
+  ;; caps lock key
+  🔒 caps
+
+  ;; unicode
+  ¿  (unicode ¿)
+  ñ  (unicode ñ)
+
+  ;; shift + return
+  ⏏️↩️ S-ret
+
+  ;; vim-like visual mode
+  🔛️ (macro home S-end)
+
+  ;; terminal clear screen
+  🧹 (macro c l e a r ret)
+
+  ;; terminal open yazi
+  📁️ (macro S-` / . p i x i / b i n / y a z i spc S-4 S-(p w d) spc - - c w d - f i l e spc S-4 S-(h o m e) / . y a z i ; spc c d spc S-' S-4 S-9 c a t spc S-4 S-( h o m e) / . y a z i S-0 S-' ret)
 )
 
 ;; The `lrld` action stands for "live reload". This will re-parse everything
