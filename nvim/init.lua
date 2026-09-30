@@ -15,7 +15,6 @@ vim.opt.rtp:append(plugins_path)
 
 local map       = vim.keymap.set
 local autocmd   = vim.api.nvim_create_autocmd
-local _, vscode = pcall(require, "vscode-neovim")
 vim.g.mapleader = " " --- <leader> key
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -29,15 +28,12 @@ if not vim.g.vscode then
   map({ 'i', 'n', 'x' }, '<a-;>', function() require("sidekick").nes_jump_or_apply() end, { desc = ' nes apply' }) --- <m-;> doesn't work with pum
   map({ 'i', 'n', 'x' }, '<a-,>', function() require("sidekick.nes").update() end, { desc = ' nes update' })
   map({ 'i', 'n', 'x' }, "<a-.>", function() require("sidekick.nes").clear() end, { desc = ' nes clear' })
-  map({ 'i', 'n', 'x' }, '<leader>lg', "<cmd>Sidekick cli toggle name=opencode<cr>", { desc = '󰵰 opencode cli' })
-  map({ 'i', 'n', 'x' }, '<leader>lG', "<cmd>Sidekick cli prompt<cr>", { desc = '󰵰 opencode prompt' })
+  map({ 'i', 'n', 'x' }, '<leader>ll', "<cmd>Sidekick cli prompt<cr>", { desc = '󰵰 opencode prompt' })
+  map({ 'i', 'n', 'x' }, '<leader>lL', "<cmd>Sidekick cli toggle name=opencode<cr>", { desc = '󰵰 opencode toggle' })
+  -- map({ 'i', 'n', 'x' }, '<leader>lm', "<cmd>Sidekick cli send msg='explain {this}'<cr>", { desc = '󰵰 opencode explain' })
 
   pcall(function() require("sidekick").setup({}) end)
 end
-
-------------------------------------------------------------------------------------------------------------------------
-
-pcall(function() require("flash").setup({ modes = { search = { enabled = true } } }) end)
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -316,7 +312,6 @@ if not vim.g.vscode then
 
   require('mini.base16').setup({
     --- `:Inspect` to reverse engineering a colorscheme
-    --- `:hi <@treesitter>` to view colors of `:Inspect` output
     --- `:Pick hl_groups` to view generated colorscheme
     --> https://github.com/NvChad/base46/tree/v2.5/lua/base46/themes for popular colorscheme palettes
     --> https://github.com/echasnovski/mini.nvim/discussions/36 community palettes
@@ -360,17 +355,13 @@ if not vim.g.vscode then
   vim.g.terminal_color_14 = "#5DE4C7"
   vim.g.terminal_color_15 = "#ffffff"
 
-  --- adding tokyonight transparency
+  --- transparency
   vim.api.nvim_set_hl(0, "Normal", { fg = "#787c99", bg = "NONE" })
   vim.api.nvim_set_hl(0, "NormalNC", { bg = "NONE" })
   vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
   vim.api.nvim_set_hl(0, "FoldColumn", { bg = "NONE" })
   vim.api.nvim_set_hl(0, "NeoCodeiumSuggestion", { fg = "#444b6a" })
-  vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = "#787c99" })
-  vim.api.nvim_set_hl(0, "SnacksPickerDir", { fg = "#a9b1d6" })
-  vim.api.nvim_set_hl(0, "SnacksPickerDirectory", { fg = "#5555cc" })
   vim.api.nvim_set_hl(0, "Directory", { fg = "#5555cc" })
-  -- vim.api.nvim_set_hl(0, "SnacksPickerFile", { fg = "#d5d6db" })
   vim.api.nvim_set_hl(0, "MiniIconsAzure", { fg = "#5555cc" })
   vim.api.nvim_set_hl(0, "MiniStatuslineFilename", { bg = "NONE" })
   vim.api.nvim_set_hl(0, "MiniCursorwordCurrent", { underline = false, bg = "#1c1c2c" })
@@ -473,6 +464,8 @@ map({ "x" }, ">", ">gv", { desc = "continious indent" })
 map({ "n" }, "<esc>", "<esc>:nohlsearch<cr>", { desc = "Clear Copilot-suggestion / search-highlight" })
 
 if not vim.g.vscode then
+  map({ "n" }, "Q", "<cmd>lua vim.cmd.quit()<cr>")
+  map({ "n" }, "R", "<cmd>lua vim.lsp.buf.format{ timeout_ms = 5000 } MiniTrailspace.trim() vim.cmd.write()<cr>")
   map({ "t" }, "<esc><esc>", "<C-\\><C-n>", { desc = "normal mode inside terminal" })
   map({ "t" }, "<S-esc>", "<C-\\><C-n>", { desc = "normal mode inside terminal" })
   map({ "n" }, "<C-s>", ":%s//g<Left><Left>", { desc = "Replace in Buffer" })
@@ -497,17 +490,6 @@ if not vim.g.vscode then
   map("c", "<c-n>", [[pumvisible()   ? "<c-e><c-n>" : "<c-n>"]], { expr = true, desc = "navigate history" })
   map("i", "<Tab>", [[pumvisible()   ? "<c-n>"      : "<tab>"]], { expr = true, desc = "next completion when no lsp" })
   map("i", "<S-Tab>", [[pumvisible() ? "<c-p>"      : "<s-tab>"]], { expr = true, desc = "prev completion when no lsp" })
-end
-
-if not vim.g.vscode then
-  map({ "n" }, "Q", "<cmd>lua vim.cmd.quit()<cr>")
-  map({ "n" }, "R", "<cmd>lua vim.lsp.buf.format{ timeout_ms = 5000 } MiniTrailspace.trim() vim.cmd.write()<cr>")
-else
-  map({ "n" }, "Q", function() vscode.call('workbench.action.closeActiveEditor') end)
-  map({ "n" }, "R", function()
-    vscode.call('editor.action.format')
-    vscode.call('workbench.action.files.save')
-  end)
 end
 
 --- ╭────────────────╮
@@ -590,7 +572,7 @@ if not vim.g.vscode then
   map("n", "<leader>LC", function() sendSequence('pixi g install --environment neovim-lsp omnisharp-roslyn=1.39.12') end,                                           { desc = " c#" })                      --- (+formatter)
   map("n", "<leader>Ld", function() sendSequence('pixi g install --environment neovim-lsp dockerfile-language-server-nodejs=0.15.0 ') fix_node_path() end,          { desc = " docker" })                  --- (+formatter)
   map("n", "<leader>Le", function() sendSequence('pixi g install --environment neovim-lsp emmet-language-server=2.8.0 ') fix_node_path() end,                       { desc = " emmet (autoclose tag)" })   --- suggests <autoclose-this-tag> but not </close-some-open-tag> like vscode-html-language-server
-  map("n", "<leader>Lf", function() sendSequence('pixi g install oxfmt=0.67.0 -c retronvim') end,                                                                   { desc = " oxfmt formatter/eslint" })  --- https://oxc.rs/docs/guide/usage/formatter/language-support
+  map("n", "<leader>Lf", function() sendSequence('pixi g install nodejs bun && bun install -g oxfmt@0.71.0') end,                                                   { desc = " oxfmt formatter/eslint" })  --- https://oxc.rs/docs/guide/usage/formatter/language-support
   map("n", "<leader>LF", function() sendSequence('pixi g install --environment neovim-lsp biome') end,                                                              { desc = " biome formatter/eslint" })  --- https://biomejs.dev/internals/language-support
   map("n", "<leader>Lg", function() sendSequence('pixi g install --environment neovim-lsp gopls=0.20.0') end,                                                       { desc = " go" })                      --- (+formatter)
   map("n", "<leader>Lh", function() sendSequence('pixi g install --environment neovim-lsp --channel retronvim phpantom_lsp=0.9.0') end,                             { desc = " php" })                     --- (+formatter)
@@ -638,15 +620,6 @@ if not vim.g.vscode then
   map("n", "<leader>E", "", { desc = " extensions" })
   map(
     "n",
-    "<leader>Ef",
-    function()
-      vim.pack.add({{ src = 'https://github.com/folke/flash.nvim', commit = "v2.1.0"}})
-      vim.cmd.restart()
-    end,
-    { desc = " flash.nvim 󰉁" }
-  )
-  map(
-    "n",
     "<leader>Ek",
     function()
       sendSequence("pixi g install opencode copilot-language-server-release -c https://prefix.dev/retronvim -c https://prefix.dev/github-releases; exit")
@@ -674,7 +647,6 @@ if not vim.g.vscode then
     end,
     { desc = " supermaven  " }
   )
-  map("n", "<leader>EF", function() vim.pack.del({"flash.nvim"}) vim.cmd.restart() end, { desc = " flash.nvim 󰉁 " })
   map("n", "<leader>EK", function() vim.pack.del({"sidekick.nvim"}) vim.cmd.restart() end, { desc = " sidekick 󰫣  " })
   map("n", "<leader>EM", function() vim.pack.del({"mini-pick-preview.nvim"}) vim.cmd.restart() end, { desc = " mini-pick-preview  " })
   map("n", "<leader>ES", function() vim.pack.del({"supermaven-nvim"}) vim.cmd.restart() end, { desc = " supermaven  " })
@@ -696,7 +668,7 @@ if not vim.g.vscode then
       vim.cmd.terminal([[ nvim --server $NVIM --remote "$(rg --files --sortr=path | fzf --no-sort --preview-window=nohidden)"]])
       vim.api.nvim_buf_set_name(0, "fzf")
       vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! fzf | set laststatus=3]] })
+      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! ]] .. vim.fn.bufnr() .. [[ | set laststatus=3]] })
     end,
     { desc = " fzf files" }
   )
@@ -713,7 +685,8 @@ if not vim.g.vscode then
     "<leader>gg",
     function()
       vim.cmd.terminal("lazygit")
-      autocmd("TermClose", { pattern = 'term*lazygit', command = [[silent! bdelete! term*lazygit]], once = true })
+      vim.api.nvim_buf_set_name(0,"lazygit")
+      autocmd("TermClose", { pattern = 'lazygit', once = true, command = [[silent! bdelete! lazygit]]})
     end,
     { desc = " lazygit" }
   ) --- `:term lazygit` doesn't work on zsh.exe
@@ -777,29 +750,11 @@ if not vim.g.vscode then
       )
       vim.cmd.file("yazi")
       vim.cmd.set("laststatus=0")
-      autocmd("TermClose", { buffer = vim.fn.bufnr(), command = [[silent! bdelete! ]] .. vim.fn.bufnr() .. [[ | set laststatus=3]], once = true })
+      autocmd("TermClose", { buffer = vim.fn.bufnr(), once = true, command = [[silent! bdelete! ]] .. vim.fn.bufnr() .. [[ | set laststatus=3]] })
     end,
     { desc = "󰙅 yazi" }
   )
-else
-  map(
-    "n",
-    "<leader>o",
-    function() return vscode.action("workbench.files.action.focusFilesExplorer") end,
-    { desc = "󰙅 explorer/previewer" }
-  )
 end
-
-------------------------------------------------------------------------------------------------------------------------
-map({ "n", "x" }, "<leader><leader>", "", { desc = "󰅌 second clipboard" })
-map("n", "<leader><leader>p", '"*p', { desc = "󰨸 paste after" })
-map("n", "<leader><leader>P", '"*P', { desc = "󰨸 paste before" })
-map("x", "<leader><leader>p", '"*p', { desc = "󰨸 paste" }) --- "Paste after (second_clip)"
-map("x", "<leader><leader>P", 'g_"*P', { desc = "󰨸 paste forward" }) --- only works in visual mode
-map("n", "<leader><leader>y", '"*y', { desc = "󰅍 yank" })
-map("n", "<leader><leader>Y", '"*yg_', { desc = "󰅍 yank forward" })
-map("x", "<leader><leader>y", '"*y', { desc = "󰅍 yank" })
-map("x", "<leader><leader>Y", 'g_"*y', { desc = "󰅍 yank forward" })
 
 --- ╭───────────────────────────────────╮
 --- │ Operator / Motions / text objects │
@@ -812,19 +767,8 @@ map({ "n" }, "g|",  [[setreg('w',             'v' . getcharstr() . getcharstr() 
 map({ "x" }, "g\\", [[setreg('q','<esc>mT`<mS`Tv' . getcharstr() . getcharstr() . 'o`So'    ) ? "" : "@q"                                ]], { expr = true, remap = true, desc = "textobj end (\\ repeats)" })      --- remap=true to detect mini.ai
 map({ "x" }, "g|",  [[setreg('w','<esc>mT`>mS`Tv' . getcharstr() . getcharstr() . '`So'     ) ? "" : "@w"                                ]], { expr = true, remap = true, desc = "textobj start (| repeats)" })     --- remap=true to detect mini.ai
 map( "x", "go", [[<cmd>let _=&commentstring | set commentstring={/*\ %s\ */} | normal gc<cr><cmd>let &commentstring=_<cr>]], { desc = "jsx comment" })
-map({ "n", "x" }, "gb", '"_d', { desc = "Blackhole Motion/Selected (dot to repeat)" })
-map({ "n", "x" }, "gB", '"_D', { desc = "Blackhole Linewise (dot to repeat)" })
-map({ "n", "o", "x" }, "g.", "`.", { desc = "go to last change" })
-map({ "n" }, "gy", '"1p', { desc = "Redo register (dot to Paste forward the rest of register)" })
-map({ "n" }, "gY", '"1P', { desc = "Redo register (dot to Paste backward the rest of register)" })
-map({ "n" }, "g<Up>", "<c-a>", { desc = "numbers ascending" })
-map({ "n" }, "g<Down>", "<c-x>", { desc = "numbers descending" })
-map({ "x" }, "g<Up>", "g<c-a>", { desc = "numbers ascending" })
-map({ "x" }, "g<Down>", "g<c-x>", { desc = "numbers descending" })
-map({ "n", "x" }, "g+", "<C-a>", { desc = "Increment number (dot to repeat)" })
-map({ "n", "x" }, "g-", "<C-x>", { desc = "Decrement number (dot to repeat)" })
-map({ "n" }, "vgh", "<cmd>lua require('mini.diff').textobject()<cr>", { desc = "select diff/hunk" })
-map({ "n" }, "vgc", "<cmd>lua require('mini.comment').textobject()<cr>", { desc = "select BlockComment" })
+map({ "n" }, "vgh", function() require('mini.diff').textobject() end, { desc = "select diff/hunk" })
+map({ "n" }, "vgc", function() require('mini.comment').textobject() end, { desc = "select BlockComment" })
 map({ "n", "o", "x" }, "gC", function() require('mini.comment').textobject() end, { desc = "select BlockComment" })
 map({ "n", "o", "x" }, "gD", function() require('mini.diff').textobject() end, { desc = "select diff/hunk" })
 map({ "o", "x" }, "ii", function() require("mini.ai").select_textobject("i", "i") end, { desc = "indent_noblanks" })
