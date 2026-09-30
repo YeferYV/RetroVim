@@ -45,8 +45,8 @@ prepend_keymap = [
   # Navigation
 	{ on = [ "J" ],        run = "seek 10",   desc = "preview next page" },
 	{ on = [ "K" ],        run = "seek -10",  desc = "preview previous page" },
-	{ on = [ "<S-Down>" ], run = "seek 1",    desc = "preview next 4 lines" },
-	{ on = [ "<S-Up>" ],   run = "seek -1",   desc = "preview previous 4 lines" },
+	{ on = [ "<C-Down>" ], run = "seek 1",    desc = "preview next 3 lines" },
+	{ on = [ "<C-Up>" ],   run = "seek -1",   desc = "preview previous 3 lines" },
 	{ on = [ "j" ],        run = "arrow 1",   desc = "down until end of list" },
 	{ on = [ "k" ],        run = "arrow -1",  desc = "up until start of list " },
 	{ on = [ "<A-j>" ],    run = "arrow 10",  desc = "move cursor down 10 lines" },
