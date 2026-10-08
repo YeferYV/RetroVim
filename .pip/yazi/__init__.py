@@ -12,7 +12,7 @@ def main():
 
     os.environ['BAT_THEME'] = 'base16'
     os.environ['FZF_DEFAULT_OPTS'] = '--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
-    os.environ['LESS'] = '--ignore-case'
+    os.environ['LESS'] = '--ignore-case --LONG-PROMPT'
     os.environ['LESSKEYIN'] = os.path.join(os.environ['RETRONVIM_PREFIX'], 'yazi', 'lesskey')
     os.environ['LESSHISTFILE'] = '-'
     os.environ['YAZI_CONFIG_HOME'] = os.path.join(os.environ['RETRONVIM_PREFIX'], 'yazi')

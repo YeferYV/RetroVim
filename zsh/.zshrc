@@ -25,7 +25,7 @@ export EZA_COLORS="reset:uu=0:ur=0:uw=0:ux=0:ue=0:gu=0:gr=0:gw=0:gx=0:tr=0:tw=0:
 export FZF_DEFAULT_OPTS='--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
 export HISTFILE="$HOME/.cache/.zsh_history"
 export HISTSIZE=10000 # fzf-history-widget by default searches latest 16 entries
-export LESS="--ignore-case"                 # bat search case insensitive
+export LESS="--ignore-case --LONG-PROMPT"   # bat search case insensitive and status bar
 export LESSKEYIN="$ZDOTDIR/../yazi/lesskey" # bat keymaps
 export LESSHISTFILE="-"                     # bat no history
 export MANROFFOPT="-c"                      # man pages colored

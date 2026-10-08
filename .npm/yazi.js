@@ -12,7 +12,7 @@ process.env.ZDOTDIR = path.join(process.env.RETRONVIM_PREFIX, 'zsh');
 
 process.env.BAT_THEME = 'base16';
 process.env.FZF_DEFAULT_OPTS = '--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi';
-process.env.LESS = '--ignore-case';
+process.env.LESS = '--ignore-case --LONG-PROMPT';
 process.env.LESSKEYIN = path.join(process.env.RETRONVIM_PREFIX, 'yazi', 'lesskey');
 process.env.LESSHISTFILE = '-';
 process.env.YAZI_CONFIG_HOME = path.join(process.env.RETRONVIM_PREFIX, 'yazi');
