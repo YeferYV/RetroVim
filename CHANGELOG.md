@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.6](https://github.com/YeferYV/RetroVim/compare/v0.0.5...v0.0.6) (2026-10-09)
+
+
+### Bug Fixes
+
+* **nvim:** `whichkey` &gt; `extensions` &gt; `mini-pick-preview.nvim` ([dac7bed](https://github.com/YeferYV/RetroVim/commit/dac7bed589342f4818b5bab576dac52bd95e2407))
+* **nvim:** oxfmt requires node, nvim-lspconfig/lsp/omnisharp broken again ([098f43b](https://github.com/YeferYV/RetroVim/commit/098f43bd0ed8df5bd0a563e4efbd7ac884019238))
+* **nvim:** python, php, ... indentation size ([fd3becc](https://github.com/YeferYV/RetroVim/commit/fd3becc3d569f17197cd50a43c1504211fcaa9d6))
+* **release.yaml:** rattler-build-action skip `recipe-path: conda.recipe/recipe.yaml` ([37ec5ba](https://github.com/YeferYV/RetroVim/commit/37ec5ba9af7a7282c6a1202f1d6885f6438cfe7c))
+* **yazi:** bat not showing status bar ([467955d](https://github.com/YeferYV/RetroVim/commit/467955dfb36c593b5986d4596868065e79a45f65))
+
 ## [0.0.5](https://github.com/YeferYV/RetroVim/compare/v0.0.4...v0.0.5) (2026-08-18)
 
 
