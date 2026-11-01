@@ -1,3 +1,6 @@
+[flavor]
+dark = "base16" # https://github.com/sharkdp/bat/blob/master/assets/themes/base16.tmTheme
+
 [mgr]
 cwd           = { fg = "#7aa2f7" }
 border_symbol = " "
