@@ -11,8 +11,9 @@ process.env.VIMINIT = `lua vim.cmd.source(vim.env.RETRONVIM_PREFIX .. [[/nvim/in
 process.env.ZDOTDIR = path.join(process.env.RETRONVIM_PREFIX, 'zsh');
 
 process.env.BAT_THEME = 'base16';
-process.env.FZF_DEFAULT_OPTS = '--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi';
-process.env.LESS = '--ignore-case --LONG-PROMPT';
+process.env.FZF_DEFAULT_OPTS = '--color hl:-1:reverse --color hl+:-1:reverse --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview"';
+process.env.FZF_DEFAULT_OPTS += ' --bind preview-scroll-up:preview-up+preview-up+preview-up --bind preview-scroll-down:preview-down+preview-down+preview-down';
+process.env.LESS = '--ignore-case --LONG-PROMPT --mouse --wheel-lines=3';
 process.env.LESSKEYIN = path.join(process.env.RETRONVIM_PREFIX, 'yazi', 'lesskey');
 process.env.LESSHISTFILE = '-';
 process.env.YAZI_CONFIG_HOME = path.join(process.env.RETRONVIM_PREFIX, 'yazi');

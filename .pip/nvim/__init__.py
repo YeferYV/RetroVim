@@ -11,8 +11,9 @@ def main():
     os.environ['ZDOTDIR'] = os.environ['RETRONVIM_PREFIX'] + '/zsh'
 
     os.environ['BAT_THEME'] = 'base16'
-    os.environ['FZF_DEFAULT_OPTS'] = '--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
-    os.environ['LESS'] = '--ignore-case --LONG-PROMPT'
+    os.environ['FZF_DEFAULT_OPTS'] = '--color hl:-1:reverse --color hl+:-1:reverse --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview"'
+    os.environ['FZF_DEFAULT_OPTS'] += ' --bind preview-scroll-up:preview-up+preview-up+preview-up --bind preview-scroll-down:preview-down+preview-down+preview-down'
+    os.environ['LESS'] = '--ignore-case --LONG-PROMPT --mouse --wheel-lines=3'
     os.environ['LESSKEYIN'] = os.path.join(os.environ['RETRONVIM_PREFIX'], 'yazi', 'lesskey')
     os.environ['LESSHISTFILE'] = '-'
     os.environ['YAZI_CONFIG_HOME'] = os.path.join(os.environ['RETRONVIM_PREFIX'], 'yazi')

@@ -22,13 +22,14 @@ alias  pacman='$(test $APPDATA && echo "pacman --noconfirm" || echo "sudo pacman
 export BAT_THEME="base16"
 export EDITOR="nvim"
 export EZA_COLORS="reset:uu=0:ur=0:uw=0:ux=0:ue=0:gu=0:gr=0:gw=0:gx=0:tr=0:tw=0:tx=0:da=0:sn=0:di=34"
-export FZF_DEFAULT_OPTS='--color "hl:-1:reverse,hl+:-1:reverse" --preview "bat --color=always {}" --preview-window=hidden --bind "?:toggle-preview" --multi'
+export FZF_DEFAULT_OPTS="--color hl:-1:reverse --color hl+:-1:reverse --preview \"bat --color=always {}\" --preview-window=hidden --bind \"?:toggle-preview\""
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS --bind preview-scroll-up:preview-up+preview-up+preview-up --bind preview-scroll-down:preview-down+preview-down+preview-down"
 export HISTFILE="$HOME/.cache/.zsh_history"
 export HISTSIZE=10000 # fzf-history-widget by default searches latest 16 entries
-export LESS="--ignore-case --LONG-PROMPT"   # bat search case insensitive and status bar
-export LESSKEYIN="$ZDOTDIR/../yazi/lesskey" # bat keymaps
-export LESSHISTFILE="-"                     # bat no history
-export MANROFFOPT="-c"                      # man pages colored
+export LESS="--ignore-case --LONG-PROMPT --mouse --wheel-lines=3" # bat search case insensitive, status bar and mouse drag support
+export LESSKEYIN="$ZDOTDIR/../yazi/lesskey"                       # bat keymaps
+export LESSHISTFILE="-"                                           # bat no history
+export MANROFFOPT="-c"                                            # man pages colored
 export NPM_CONFIG_PREFIX="$HOME/.local/share/npm"
 export PAGER="less -R --use-color --color=d+g --color=u+r --color=Pyk --color=Syk"
 export SAVEHIST=10000
@@ -126,11 +127,11 @@ _autosuggest_accept() {
 }
 zle -N _autosuggest_accept
 
-# 5. Bind Right Arrow (and Alt+Right) to accept
+# 4. Bind Right Arrow (and Alt+Right) to accept
 bindkey -M viins '\e[C' _autosuggest_accept
 bindkey -M viins '\el'  _autosuggest_accept
 
-# 4. Use add-zle-hook-widget (hooks INTO widgets, doesn't replace them)
+# 5. Use add-zle-hook-widget (hooks INTO widgets, doesn't replace them)
 autoload -Uz add-zle-hook-widget
 add-zle-hook-widget line-pre-redraw _autosuggest_fetch
 add-zle-hook-widget isearch-update  _autosuggest_fetch
